@@ -29,14 +29,27 @@ const BlogSchema = new mongoose.Schema({
     default: 'Agency Team',
   },
   readTime: {
-    type: String, // e.g. "5 Min Read"
-    default: '3 Min Read',
+    type: String, // e.g. "5 min read"
+    default: '3 min read',
   },
   tags: [
     {
       type: String,
     }
   ],
+  // Set by the daily generator so machine-written posts can be audited,
+  // filtered, or bulk-removed later. Hand-written posts leave it false.
+  aiGenerated: {
+    type: Boolean,
+    default: false,
+  },
+  // Which curated topic produced this post. Drives least-recently-used
+  // rotation so the generator does not repeat itself.
+  topicKey: {
+    type: String,
+    default: '',
+    index: true,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
