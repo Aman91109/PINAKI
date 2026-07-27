@@ -5,8 +5,8 @@ import { cn } from '@/lib/cn';
 
 /** Shared control surface so inputs, selects and textareas stay identical. */
 const CONTROL =
-  'w-full rounded-lg border border-line bg-surface-inset px-3.5 py-3 ' +
-  'font-poppins text-xs text-ink placeholder:text-ink-subtle ' +
+  'w-full rounded-lg border border-line bg-surface-inset px-4 py-3 ' +
+  'text-sm text-ink placeholder:text-ink-subtle ' +
   'transition-colors duration-200 hover:border-line-strong focus:border-accent ' +
   'disabled:opacity-50 disabled:cursor-not-allowed';
 
@@ -46,7 +46,7 @@ export function Field({ label, hint, className, children }: FieldShellProps) {
     <div className={cn('flex flex-col gap-2', className)}>
       <Label htmlFor={id}>{label}</Label>
       {children(id)}
-      {hint && <p className="font-poppins text-[11px] text-ink-subtle">{hint}</p>}
+      {hint && <p className="text-[11px] text-ink-subtle">{hint}</p>}
     </div>
   );
 }

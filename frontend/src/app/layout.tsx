@@ -1,44 +1,67 @@
-import type { Metadata } from "next";
-import { Inter, Space_Grotesk, Poppins } from "next/font/google";
-import "./globals.css";
-import ClientLayout from "@/components/providers/ClientLayout";
+import type { Metadata, Viewport } from 'next';
+import { Inter, Space_Grotesk } from 'next/font/google';
+import './globals.css';
+import ClientLayout from '@/components/providers/ClientLayout';
 
 const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
 });
 
 const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-space-grotesk",
+  subsets: ['latin'],
+  variable: '--font-space-grotesk',
+  display: 'swap',
 });
 
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-poppins",
-});
+const SITE_URL = 'https://pinaki.dev';
+const TITLE = 'Pinaki — Freelance Web, AI & Automation Studio';
+const DESCRIPTION =
+  'A three-person freelance engineering studio building fast web applications, AI systems and automation. Next.js, Node, Python. Fixed scope, clear timelines, direct access to the people writing the code.';
 
 export const metadata: Metadata = {
-  title: "Pinaki Labs | Premium Futuristic Digital & AI Agency",
-  description: "Pinaki Labs is a high-end creative agency specializing in Next-Gen Web Development, AI/ML Solutions, custom Automation, and Awwwards-level UI/UX designs that grow businesses.",
-  keywords: "Web Development, AI Solutions, Machine Learning, Automation, UI/UX Design, Next.js, Premium Agency, Freelance Development",
-  authors: [{ name: "Pinaki Labs" }],
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: TITLE,
+    template: '%s — Pinaki',
+  },
+  description: DESCRIPTION,
+  keywords: [
+    'freelance web developer',
+    'Next.js developer',
+    'AI engineer',
+    'machine learning freelancer',
+    'Python automation',
+    'full-stack development',
+    'React developer India',
+  ],
+  authors: [{ name: 'Pinaki' }],
+  creator: 'Pinaki',
+  alternates: { canonical: '/' },
   openGraph: {
-    title: "Pinaki Labs | Premium Futuristic Digital & AI Agency",
-    description: "We build digital experiences that grow businesses. Next-Gen Web Dev, AI/ML Solutions, Automation, and Awwwards-level Design.",
-    type: "website",
-    locale: "en_US",
+    title: TITLE,
+    description: DESCRIPTION,
+    url: SITE_URL,
+    siteName: 'Pinaki',
+    type: 'website',
+    locale: 'en_US',
   },
   twitter: {
-    card: "summary_large_image",
-    title: "Pinaki Labs | Premium Futuristic Digital & AI Agency",
-    description: "We build digital experiences that grow businesses. Next-Gen Web Dev, AI/ML Solutions, Automation, and Awwwards-level Design.",
+    card: 'summary_large_image',
+    title: TITLE,
+    description: DESCRIPTION,
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: { index: true, follow: true, 'max-image-preview': 'large' },
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#000000',
+  colorScheme: 'dark',
 };
 
 export default function RootLayout({
@@ -47,14 +70,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${inter.variable} ${spaceGrotesk.variable} ${poppins.variable} dark scroll-smooth`}
-    >
+    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable} scroll-smooth`}>
       <body className="overflow-x-hidden bg-canvas font-sans text-ink antialiased">
-        <ClientLayout>
-          {children}
-        </ClientLayout>
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[1000] focus:rounded-lg focus:bg-accent focus:px-4 focus:py-2 focus:font-display focus:text-sm focus:text-accent-ink"
+        >
+          Skip to content
+        </a>
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );

@@ -35,11 +35,11 @@ export default function LegalPage({ icon: Icon, title, meta, clauses }: LegalPag
           Back to Home
         </Link>
 
-        <div className="mb-5 flex items-center gap-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-accent-line bg-accent-soft text-accent">
+        <div className="mb-5 flex items-center gap-3.5">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-accent-line bg-accent-soft text-accent">
             <Icon className="h-5 w-5" />
           </span>
-          <h1 className="font-space text-3xl font-bold tracking-tight text-ink md:text-5xl">
+          <h1 className="font-display text-3xl font-bold tracking-tighter text-ink md:text-5xl">
             {title}
           </h1>
         </div>
@@ -51,10 +51,10 @@ export default function LegalPage({ icon: Icon, title, meta, clauses }: LegalPag
         <div className="flex flex-col gap-8">
           {clauses.map((clause) => (
             <section key={clause.heading}>
-              <h2 className="mb-3 font-space text-base font-bold uppercase tracking-wider text-ink">
+              <h2 className="mb-3 font-display text-base font-bold uppercase tracking-wider text-ink">
                 {clause.heading}
               </h2>
-              <p className="font-poppins text-sm leading-relaxed text-ink-muted">{clause.body}</p>
+              <p className="text-sm leading-relaxed text-ink-muted">{clause.body}</p>
             </section>
           ))}
         </div>

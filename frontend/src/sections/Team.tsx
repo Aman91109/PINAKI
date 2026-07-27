@@ -2,53 +2,84 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Briefcase, Award } from 'lucide-react';
 import Image from 'next/image';
-import { Card, Section, SectionHeading } from '@/components/ui/primitives';
+import { Badge, Section, SectionHeading } from '@/components/ui/primitives';
 import { API_BASE_URL } from '@/config';
 
-const fallbackTeam = [
+interface Member {
+  name: string;
+  role: string;
+  bio: string;
+  focus: string[];
+  experience: string;
+  projectsCount: number;
+  image: string;
+  socialLinks: { github?: string; linkedin?: string; twitter?: string };
+}
+
+/**
+ * Percentage skill bars were removed: self-assigned numbers like "Next.js 98%"
+ * read as junior and mean nothing to a buyer. A plain list of what each person
+ * actually works on is more useful and more credible.
+ */
+const fallbackTeam: Member[] = [
   {
     name: 'Somesh Kumar Mishra',
-    role: 'Full-Stack & GenAI Architect',
-    bio: "National SIH'24 Winner. President of the MIT Coding Club. Specializes in MERN applications, Socket.IO real-time channels, Redis caching, and custom multi-role validation blocks.",
-    skills: [
-      { name: 'Next.js / React / TS', level: 98 },
-      { name: 'Node.js & Socket.IO', level: 95 },
-      { name: 'Docker & Cloud Deploy', level: 90 },
-    ],
-    experience: '4+ Years',
+    role: 'Full-stack & GenAI',
+    bio: "National SIH'24 winner and President of the MIT Coding Club. Builds the application layer — real-time features, caching and multi-role access control.",
+    focus: ['Next.js', 'React', 'Socket.IO', 'Redis', 'Docker'],
+    experience: '4+ years',
     projectsCount: 28,
     image: '/somesh.jpg',
-    socialLinks: { github: 'https://github.com/Somesh-Mishra-9', linkedin: 'https://www.linkedin.com/in/somesh-mishra-ba2358219/', twitter: 'https://twitter.com' },
+    socialLinks: {
+      github: 'https://github.com/Somesh-Mishra-9',
+      linkedin: 'https://www.linkedin.com/in/somesh-mishra-ba2358219/',
+    },
   },
   {
     name: 'Nishant Kumar',
-    role: 'Backend & ML Systems Engineer',
-    bio: 'TCS NQT Top 5% Ranker. Vice President of the MIT Coding Club. Expert in Next.js backend routing, REST endpoints, database structures, and PaddleOCR/Ollama NLP pipelines.',
-    skills: [
-      { name: 'TypeScript & Node API', level: 97 },
-      { name: 'Python & NLP Models', level: 95 },
-      { name: 'PostgreSQL & MongoDB', level: 93 },
-    ],
-    experience: '4+ Years',
+    role: 'Backend & ML systems',
+    bio: 'TCS NQT top 5% ranker and Vice President of the MIT Coding Club. Owns the data layer, API design and the NLP pipelines that sit behind them.',
+    focus: ['Node', 'TypeScript', 'Python', 'PostgreSQL', 'MongoDB'],
+    experience: '4+ years',
     projectsCount: 35,
     image: '/nishant.jpg',
-    socialLinks: { github: 'https://github.com/nishant946', linkedin: 'https://www.linkedin.com/in/nishant-kumar-a5b9a3258/', twitter: 'https://twitter.com' },
+    socialLinks: {
+      github: 'https://github.com/nishant946',
+      linkedin: 'https://www.linkedin.com/in/nishant-kumar-a5b9a3258/',
+    },
   },
   {
     name: 'Aman Kumar',
-    role: 'Researcher & Data Scientist',
-    bio: 'Event Coordinator at DTC Foss Club. Expert in Deep Learning (CNNs), Generative AI models, image preprocessing using OpenCV, and Supabase analytics logging pipelines.',
-    skills: [
-      { name: 'Deep Learning & CNN', level: 96 },
-      { name: 'Python & Data Analytics', level: 94 },
-      { name: 'Cloud & Database Mappings', level: 91 },
-    ],
-    experience: '3+ Years',
+    role: 'Research & data science',
+    bio: 'Event coordinator at the DTC FOSS Club. Handles model work — computer vision, generative models and the analytics that prove they are working.',
+    focus: ['Deep learning', 'OpenCV', 'Python', 'Analytics', 'Supabase'],
+    experience: '3+ years',
     projectsCount: 18,
     image: '/aman-kumar.jpg',
-    socialLinks: { github: 'https://github.com/Aman91109', linkedin: 'https://www.linkedin.com/in/aman-kumar-735905321', twitter: 'https://twitter.com' },
+    socialLinks: {
+      github: 'https://github.com/Aman91109',
+      linkedin: 'https://www.linkedin.com/in/aman-kumar-735905321',
+    },
+  },
+];
+
+const principles = [
+  {
+    title: 'You talk to the builders',
+    body: 'No account managers relaying messages. The person answering your question is the person writing the code.',
+  },
+  {
+    title: 'Scope is fixed before we start',
+    body: 'You get a written scope and a fixed quote up front. If the work grows, we re-quote rather than quietly billing more.',
+  },
+  {
+    title: 'Small book, on purpose',
+    body: 'We take a limited number of projects at a time so nothing sits in a queue waiting for attention.',
+  },
+  {
+    title: 'You own everything',
+    body: 'Source code, design files and infrastructure are yours on final payment. No lock-in, no hostage situations.',
   },
 ];
 
@@ -67,25 +98,17 @@ const LinkedinIcon = () => (
   </svg>
 );
 
-const TwitterIcon = () => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
-    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-  </svg>
-);
-
 export default function Team() {
-  const [team, setTeam] = useState(fallbackTeam);
+  const [team, setTeam] = useState<Member[]>(fallbackTeam);
 
   useEffect(() => {
     const fetchTeam = async () => {
       try {
         const res = await fetch(`${API_BASE_URL}/api/public/team`);
         const data = await res.json();
-        if (data.success && data.data && data.data.length > 0) {
-          setTeam(data.data);
-        }
+        if (data.success && data.data?.length) setTeam(data.data);
       } catch {
-        console.warn('Could not connect to team API. Using local fallbacks.');
+        console.warn('Team API unreachable. Using local defaults.');
       }
     };
     fetchTeam();
@@ -93,110 +116,90 @@ export default function Team() {
 
   return (
     <Section id="team" tone="canvas">
-      <SectionHeading eyebrow="The Directors" title="Meet The Innovators" />
+      <SectionHeading
+        index="04"
+        eyebrow="The studio"
+        title="Three engineers, not an agency."
+        description="Pinaki is a small freelance studio. We started it because good engineering was either locked behind agency retainers or delivered slowly by shops that treated the front end as an afterthought. We do both halves properly, and there is no layer between you and us."
+      />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {team.map((member, idx) => (
-          <motion.div
+          <motion.article
             key={member.name}
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-50px' }}
-            transition={{ duration: 0.6, delay: idx * 0.15 }}
-            className="group h-full"
+            viewport={{ once: true, margin: '-40px' }}
+            transition={{ duration: 0.5, delay: idx * 0.1 }}
+            className="group flex flex-col overflow-hidden rounded-xl border border-line bg-surface transition-colors duration-200 hover:border-line-strong"
           >
-            <Card interactive className="flex h-full flex-col justify-between">
-              <div>
-                <div className="relative mb-6 h-[320px] w-full overflow-hidden rounded-lg border border-line">
-                  <Image
-                    src={member.image}
-                    alt={member.name}
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 33vw"
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                </div>
+            <div className="relative aspect-[4/5] w-full overflow-hidden border-b border-line">
+              <Image
+                src={member.image}
+                alt={member.name}
+                fill
+                sizes="(max-width: 1024px) 100vw, 33vw"
+                className="object-cover grayscale transition-all duration-700 group-hover:scale-[1.03] group-hover:grayscale-0"
+              />
+            </div>
 
-                <div className="mb-4">
-                  <h3 className="font-space text-xl font-bold text-ink">{member.name}</h3>
-                  <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.2em] text-accent">
-                    {member.role}
-                  </p>
-                </div>
+            <div className="flex flex-1 flex-col p-6">
+              <h3 className="font-display text-lg font-bold tracking-tight text-ink">
+                {member.name}
+              </h3>
+              <p className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.2em] text-accent">
+                {member.role}
+              </p>
 
-                <div className="mb-6 flex flex-wrap gap-4 font-mono text-[10px] uppercase tracking-wider text-ink-subtle">
-                  <span className="flex items-center gap-1.5">
-                    <Briefcase className="h-3.5 w-3.5" />
-                    {member.projectsCount} Projects
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <Award className="h-3.5 w-3.5" />
-                    {member.experience}
-                  </span>
-                </div>
+              <p className="mt-4 text-[13px] leading-relaxed text-ink-muted">{member.bio}</p>
 
-                <p className="mb-6 font-poppins text-xs leading-relaxed text-ink-muted">
-                  {member.bio}
-                </p>
-
-                <div className="mb-6 flex flex-col gap-4">
-                  {member.skills.map((skill) => (
-                    <div key={skill.name} className="flex flex-col gap-1.5">
-                      <div className="flex justify-between font-mono text-[9px] uppercase tracking-wider">
-                        <span className="text-ink-muted">{skill.name}</span>
-                        <span className="text-accent">{skill.level}%</span>
-                      </div>
-                      <div className="h-[3px] w-full overflow-hidden rounded-full bg-line">
-                        <motion.div
-                          initial={{ width: 0 }}
-                          whileInView={{ width: `${skill.level}%` }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 1, ease: 'easeOut', delay: 0.2 }}
-                          className="h-full bg-accent"
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
+              <div className="mt-5 flex flex-wrap gap-1.5">
+                {(member.focus || []).map((item) => (
+                  <Badge key={item}>{item}</Badge>
+                ))}
               </div>
 
-              <div className="flex gap-4 border-t border-line pt-4">
-                {member.socialLinks?.github && (
-                  <a
-                    href={member.socialLinks.github}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label={`${member.name} on GitHub`}
-                    className="text-ink-subtle transition-colors hover:text-accent"
-                  >
-                    <GithubIcon />
-                  </a>
-                )}
-                {member.socialLinks?.linkedin && (
-                  <a
-                    href={member.socialLinks.linkedin}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label={`${member.name} on LinkedIn`}
-                    className="text-ink-subtle transition-colors hover:text-accent"
-                  >
-                    <LinkedinIcon />
-                  </a>
-                )}
-                {member.socialLinks?.twitter && (
-                  <a
-                    href={member.socialLinks.twitter}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label={`${member.name} on X`}
-                    className="text-ink-subtle transition-colors hover:text-accent"
-                  >
-                    <TwitterIcon />
-                  </a>
-                )}
+              <div className="mt-auto flex items-center justify-between gap-4 border-t border-line pt-5 mt-6">
+                <span className="font-mono text-[10px] uppercase tracking-wider text-ink-subtle">
+                  {member.experience} · {member.projectsCount} projects
+                </span>
+                <div className="flex gap-3">
+                  {member.socialLinks?.github && (
+                    <a
+                      href={member.socialLinks.github}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={`${member.name} on GitHub`}
+                      className="text-ink-subtle transition-colors hover:text-accent"
+                    >
+                      <GithubIcon />
+                    </a>
+                  )}
+                  {member.socialLinks?.linkedin && (
+                    <a
+                      href={member.socialLinks.linkedin}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={`${member.name} on LinkedIn`}
+                      className="text-ink-subtle transition-colors hover:text-accent"
+                    >
+                      <LinkedinIcon />
+                    </a>
+                  )}
+                </div>
               </div>
-            </Card>
-          </motion.div>
+            </div>
+          </motion.article>
+        ))}
+      </div>
+
+      {/* How we operate */}
+      <div className="mt-6 grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+        {principles.map((p) => (
+          <div key={p.title} className="bg-surface p-6">
+            <h3 className="font-display text-sm font-bold tracking-tight text-ink">{p.title}</h3>
+            <p className="mt-2 text-[13px] leading-relaxed text-ink-muted">{p.body}</p>
+          </div>
         ))}
       </div>
     </Section>

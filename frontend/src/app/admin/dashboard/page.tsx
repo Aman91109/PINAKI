@@ -265,11 +265,11 @@ export default function AdminDashboard() {
           {/* Logo */}
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 bg-accent rounded-full" />
-            <span className="font-space text-lg font-bold tracking-wider">PINAKI PANEL</span>
+            <span className="font-display text-lg font-bold tracking-wider">PINAKI PANEL</span>
           </div>
 
           {/* Navigation Links */}
-          <nav className="flex flex-col gap-2 font-space text-xs">
+          <nav className="flex flex-col gap-2 font-display text-xs">
             <button
               onClick={() => setActiveTab('overview')}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl w-full text-left cursor-pointer transition-colors ${
@@ -362,13 +362,13 @@ export default function AdminDashboard() {
               {adminUser?.username?.substring(0, 2).toUpperCase() || 'AD'}
             </div>
             <div className="flex flex-col min-w-0">
-              <span className="text-xs font-space font-medium text-ink truncate">{adminUser?.username || 'Admin'}</span>
+              <span className="text-xs font-display font-medium text-ink truncate">{adminUser?.username || 'Admin'}</span>
               <span className="text-[9px] font-mono text-accent uppercase truncate">ROLE // {adminUser?.role || 'ADMIN'}</span>
             </div>
           </div>
           <button
             onClick={handleLogout}
-            className="flex items-center justify-center gap-2 py-2.5 rounded-xl border border-red-500/20 bg-red-500/5 text-red-400 font-space text-[10px] uppercase tracking-widest hover:bg-red-500 hover:text-ink transition-all cursor-pointer"
+            className="flex items-center justify-center gap-2 py-2.5 rounded-xl border border-red-500/20 bg-red-500/5 text-red-400 font-display text-[10px] uppercase tracking-widest hover:bg-red-500 hover:text-ink transition-all cursor-pointer"
           >
             <LogOut className="w-3.5 h-3.5" />
             Logout Session
@@ -384,7 +384,7 @@ export default function AdminDashboard() {
         {/* Header toolbar */}
         <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10 pb-6 border-b border-line">
           <div>
-            <h1 className="text-2xl md:text-3xl font-space font-bold text-ink tracking-tight uppercase flex items-center gap-2">
+            <h1 className="text-2xl md:text-3xl font-display font-bold text-ink tracking-tight uppercase flex items-center gap-2">
               <ShieldCheck className="w-7 h-7 text-accent animate-pulse" />
               Console // {activeTab}
             </h1>
@@ -417,25 +417,25 @@ export default function AdminDashboard() {
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
                   <Card>
                     <span className="block text-[9px] font-mono text-ink-subtle uppercase tracking-widest">Total Inquiries</span>
-                    <span className="block text-4xl font-space font-bold text-accent mt-2">{analytics.summary.totalLeads}</span>
+                    <span className="block text-4xl font-display font-bold text-accent mt-2">{analytics.summary.totalLeads}</span>
                     <span className="block text-[9px] font-mono text-green-400 mt-2">New: {analytics.summary.leadsByStatus.new}</span>
                   </Card>
 
                   <Card>
                     <span className="block text-[9px] font-mono text-ink-subtle uppercase tracking-widest">Subscribers</span>
-                    <span className="block text-4xl font-space font-bold text-accent mt-2">{analytics.summary.totalSubscribers}</span>
+                    <span className="block text-4xl font-display font-bold text-accent mt-2">{analytics.summary.totalSubscribers}</span>
                     <span className="block text-[9px] font-mono text-ink-subtle mt-2">Newsletter Active</span>
                   </Card>
 
                   <Card>
                     <span className="block text-[9px] font-mono text-ink-subtle uppercase tracking-widest">Showcases</span>
-                    <span className="block text-4xl font-space font-bold text-ink mt-2">{analytics.summary.totalProjects}</span>
+                    <span className="block text-4xl font-display font-bold text-ink mt-2">{analytics.summary.totalProjects}</span>
                     <span className="block text-[9px] font-mono text-ink-subtle mt-2">Portfolio items</span>
                   </Card>
 
                   <Card>
                     <span className="block text-[9px] font-mono text-ink-subtle uppercase tracking-widest">Active Team</span>
-                    <span className="block text-4xl font-space font-bold text-green-400 mt-2">{analytics.summary.totalTeam}</span>
+                    <span className="block text-4xl font-display font-bold text-green-400 mt-2">{analytics.summary.totalTeam}</span>
                     <span className="block text-[9px] font-mono text-ink-subtle mt-2">Full partners</span>
                   </Card>
                 </div>
@@ -444,7 +444,7 @@ export default function AdminDashboard() {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                   {/* Daily Leads Chart */}
                   <div className="lg:col-span-8 rounded-2xl border border-line bg-surface p-6 flex flex-col gap-6">
-                    <h3 className="font-space text-xs font-semibold uppercase tracking-wider text-accent flex items-center gap-2">
+                    <h3 className="font-display text-xs font-semibold uppercase tracking-wider text-accent flex items-center gap-2">
                       <BarChart3 className="w-4 h-4" /> Inquiries Last 7 Days
                     </h3>
                     {/* SVG/Bar visual chart */}
@@ -466,7 +466,7 @@ export default function AdminDashboard() {
 
                   {/* Distribution breakdown */}
                   <div className="lg:col-span-4 rounded-2xl border border-line bg-surface p-6 flex flex-col gap-6">
-                    <h3 className="font-space text-xs font-semibold uppercase tracking-wider text-accent">
+                    <h3 className="font-display text-xs font-semibold uppercase tracking-wider text-accent">
                       Scopes Distribution
                     </h3>
                     <div className="flex flex-col gap-4 mt-2">
@@ -487,12 +487,12 @@ export default function AdminDashboard() {
 
                 {/* Mini leads queue */}
                 <div className="rounded-2xl border border-line bg-surface p-6">
-                  <h3 className="font-space text-xs font-semibold uppercase tracking-wider mb-6">Recent Contact Feed</h3>
+                  <h3 className="font-display text-xs font-semibold uppercase tracking-wider mb-6">Recent Contact Feed</h3>
                   <div className="flex flex-col gap-3">
                     {leadsList.slice(0, 3).map((lead) => (
                       <div key={lead._id} className="flex items-center justify-between p-4 border border-line rounded-xl hover:bg-surface-hover transition-colors">
                         <div className="flex flex-col">
-                          <span className="font-space text-xs font-semibold text-ink">{lead.name}</span>
+                          <span className="font-display text-xs font-semibold text-ink">{lead.name}</span>
                           <span className="font-mono text-[9px] text-accent uppercase tracking-widest">{lead.projectType} // {lead.budget}</span>
                         </div>
                         <span className={`text-[9px] font-mono uppercase tracking-widest px-2.5 py-1 rounded-full border ${
@@ -511,13 +511,13 @@ export default function AdminDashboard() {
             {activeTab === 'leads' && (
               <div className="rounded-2xl border border-line bg-surface p-6 flex flex-col gap-6">
                 <div className="flex justify-between items-center pb-4 border-b border-line">
-                  <h3 className="font-space text-sm font-semibold uppercase tracking-wider">
+                  <h3 className="font-display text-sm font-semibold uppercase tracking-wider">
                     Inquiries Pipeline ({leadsList.length})
                   </h3>
                   
                   <button
                     onClick={handleCSVExport}
-                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-accent-line bg-accent-soft hover:bg-accent text-accent-ink font-space text-[10px] uppercase tracking-widest transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-accent-line bg-accent-soft hover:bg-accent text-accent-ink font-display text-[10px] uppercase tracking-widest transition-colors cursor-pointer"
                   >
                     <Download className="w-3.5 h-3.5" />
                     Export leads CSV
@@ -525,7 +525,7 @@ export default function AdminDashboard() {
                 </div>
 
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left font-poppins text-xs">
+                  <table className="w-full text-left text-xs">
                     <thead>
                       <tr className="border-b border-line font-mono text-[9px] text-ink-subtle uppercase tracking-widest">
                         <th className="pb-4 font-normal">Contact / Co</th>
@@ -540,7 +540,7 @@ export default function AdminDashboard() {
                       {leadsList.map((lead) => (
                         <tr key={lead._id} className="hover:bg-surface-hover transition-colors">
                           <td className="py-4 pr-4">
-                            <span className="block font-space text-xs font-semibold text-ink">{lead.name}</span>
+                            <span className="block font-display text-xs font-semibold text-ink">{lead.name}</span>
                             <span className="block text-[10px] text-ink-subtle">{lead.email}</span>
                             {lead.phone && <span className="block text-[9px] text-ink-subtle font-mono mt-0.5">{lead.phone}</span>}
                           </td>
@@ -598,12 +598,12 @@ export default function AdminDashboard() {
             {/* TABS 3: NEWSLETTER SUBSCRIBERS */}
             {activeTab === 'subscribers' && (
               <div className="rounded-2xl border border-line bg-surface p-6 flex flex-col gap-6">
-                <h3 className="font-space text-sm font-semibold uppercase tracking-wider pb-4 border-b border-line">
+                <h3 className="font-display text-sm font-semibold uppercase tracking-wider pb-4 border-b border-line">
                   Subscribed Nodes ({subscribersList.length})
                 </h3>
 
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left font-poppins text-xs">
+                  <table className="w-full text-left text-xs">
                     <thead>
                       <tr className="border-b border-line font-mono text-[9px] text-ink-subtle uppercase tracking-widest">
                         <th className="pb-4 font-normal">Subscriber Email</th>
@@ -614,7 +614,7 @@ export default function AdminDashboard() {
                     <tbody className="divide-y divide-line">
                       {subscribersList.map((sub) => (
                         <tr key={sub._id} className="hover:bg-surface-hover transition-colors">
-                          <td className="py-4 font-space text-xs font-semibold text-ink">{sub.email}</td>
+                          <td className="py-4 font-display text-xs font-semibold text-ink">{sub.email}</td>
                           <td className="py-4 font-mono text-xs text-ink-subtle">{new Date(sub.createdAt).toLocaleDateString()}</td>
                           <td className="py-4 text-right">
                             <button
@@ -643,7 +643,7 @@ export default function AdminDashboard() {
                 
                 {/* CMS List Header */}
                 <div className="flex justify-between items-center">
-                  <h3 className="font-space text-sm font-semibold uppercase tracking-wider text-ink-muted">
+                  <h3 className="font-display text-sm font-semibold uppercase tracking-wider text-ink-muted">
                     Active {activeTab} instances
                   </h3>
                   
@@ -659,7 +659,7 @@ export default function AdminDashboard() {
                         setFaqForm({ question: '', answer: '', order: 0 });
                         setBlogForm({ title: '', excerpt: '', content: '', author: '', readTime: '', tags: '' });
                       }}
-                      className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-accent text-accent-ink font-space text-[10px] uppercase tracking-widest transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-accent text-accent-ink font-display text-[10px] uppercase tracking-widest transition-colors cursor-pointer"
                     >
                       <Plus className="w-4 h-4" />
                       Create New Entry
@@ -670,7 +670,7 @@ export default function AdminDashboard() {
                 {/* Forms overlays */}
                 {showAddForm && (
                   <div className="rounded-xl p-6 border border-line bg-surface">
-                    <h4 className="font-space text-xs font-bold uppercase tracking-widest text-accent mb-6">
+                    <h4 className="font-display text-xs font-bold uppercase tracking-widest text-accent mb-6">
                       {editingId ? 'Modify / Save Details' : 'Create New Database Object'}
                     </h4>
 
@@ -860,8 +860,8 @@ export default function AdminDashboard() {
                       <Card key={p._id} className="flex flex-col justify-between h-[200px]">
                         <div>
                           <span className="text-[9px] font-mono text-accent uppercase">{p.category}</span>
-                          <h4 className="font-space text-sm font-semibold text-ink truncate mt-1">{p.title}</h4>
-                          <p className="font-poppins text-[10px] text-ink-subtle line-clamp-2 mt-2 leading-relaxed">{p.description}</p>
+                          <h4 className="font-display text-sm font-semibold text-ink truncate mt-1">{p.title}</h4>
+                          <p className="text-[10px] text-ink-subtle line-clamp-2 mt-2 leading-relaxed">{p.description}</p>
                         </div>
                         <div className="flex gap-3 justify-end pt-4 border-t border-line">
                           <button
@@ -890,8 +890,8 @@ export default function AdminDashboard() {
                       <Card key={m._id} className="flex flex-col justify-between h-[200px]">
                         <div>
                           <span className="text-[9px] font-mono text-accent uppercase">{m.experience} Experience</span>
-                          <h4 className="font-space text-sm font-semibold text-ink mt-1">{m.name}</h4>
-                          <p className="font-poppins text-[10px] text-ink-subtle line-clamp-2 mt-2">{m.role}</p>
+                          <h4 className="font-display text-sm font-semibold text-ink mt-1">{m.name}</h4>
+                          <p className="text-[10px] text-ink-subtle line-clamp-2 mt-2">{m.role}</p>
                         </div>
                         <div className="flex gap-3 justify-end pt-4 border-t border-line">
                           <button
@@ -919,8 +919,8 @@ export default function AdminDashboard() {
                       <Card key={s._id} className="flex flex-col justify-between h-[200px]">
                         <div>
                           <span className="text-[9px] font-mono text-accent uppercase">ICON // {s.iconName}</span>
-                          <h4 className="font-space text-sm font-semibold text-ink mt-1">{s.name}</h4>
-                          <p className="font-poppins text-[10px] text-ink-subtle line-clamp-2 mt-2 leading-relaxed">{s.description}</p>
+                          <h4 className="font-display text-sm font-semibold text-ink mt-1">{s.name}</h4>
+                          <p className="text-[10px] text-ink-subtle line-clamp-2 mt-2 leading-relaxed">{s.description}</p>
                         </div>
                         <div className="flex gap-3 justify-end pt-4 border-t border-line">
                           <button
@@ -948,8 +948,8 @@ export default function AdminDashboard() {
                       <Card key={f._id} className="flex flex-col justify-between h-[200px]">
                         <div>
                           <span className="text-[9px] font-mono text-accent uppercase">ORDER // {f.order}</span>
-                          <h4 className="font-space text-sm font-semibold text-ink mt-1 line-clamp-2">{f.question}</h4>
-                          <p className="font-poppins text-[10px] text-ink-subtle line-clamp-2 mt-2 leading-relaxed">{f.answer}</p>
+                          <h4 className="font-display text-sm font-semibold text-ink mt-1 line-clamp-2">{f.question}</h4>
+                          <p className="text-[10px] text-ink-subtle line-clamp-2 mt-2 leading-relaxed">{f.answer}</p>
                         </div>
                         <div className="flex gap-3 justify-end pt-4 border-t border-line">
                           <button
@@ -974,8 +974,8 @@ export default function AdminDashboard() {
                       <Card key={b._id} className="flex flex-col justify-between h-[200px]">
                         <div>
                           <span className="text-[9px] font-mono text-accent uppercase">BY {b.author} // {b.readTime}</span>
-                          <h4 className="font-space text-sm font-semibold text-ink mt-1 line-clamp-2">{b.title}</h4>
-                          <p className="font-poppins text-[10px] text-ink-subtle line-clamp-2 mt-2 leading-relaxed">{b.excerpt}</p>
+                          <h4 className="font-display text-sm font-semibold text-ink mt-1 line-clamp-2">{b.title}</h4>
+                          <p className="text-[10px] text-ink-subtle line-clamp-2 mt-2 leading-relaxed">{b.excerpt}</p>
                         </div>
                         <div className="flex gap-3 justify-end pt-4 border-t border-line">
                           <button

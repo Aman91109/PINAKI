@@ -1,33 +1,42 @@
-import { ArrowLeft, Terminal } from 'lucide-react';
+import type { Metadata } from 'next';
+import { ArrowLeft, Mail } from 'lucide-react';
 import Navbar from '@/components/ui/Navbar';
 import Footer from '@/components/ui/Footer';
 import Button from '@/components/ui/primitives/Button';
+import { CONTACT } from '@/content/site';
+
+export const metadata: Metadata = {
+  title: 'Page not found',
+};
 
 export default function NotFound() {
   return (
     <div className="flex min-h-screen flex-col justify-between bg-canvas">
       <Navbar />
 
-      <main className="mx-auto my-auto flex w-full max-w-lg flex-col items-center px-6 py-32 text-center">
-        <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-lg border border-accent-line bg-accent-soft text-accent">
-          <Terminal className="h-6 w-6" />
+      <main className="mx-auto my-auto flex w-full max-w-xl flex-col items-start px-6 py-40">
+        <span className="font-mono text-[11px] uppercase tracking-[0.28em] text-accent">
+          Error 404
+        </span>
+
+        <h1 className="mt-5 font-display text-5xl font-bold tracking-tighter text-ink md:text-7xl">
+          This page doesn&apos;t exist.
+        </h1>
+
+        <p className="mt-5 max-w-md text-base leading-relaxed text-ink-muted">
+          The link is either broken or the page has moved. Nothing you did wrong.
+        </p>
+
+        <div className="mt-9 flex flex-wrap gap-3">
+          <Button href="/" size="lg">
+            <ArrowLeft className="h-4 w-4" />
+            Back to home
+          </Button>
+          <Button href={`mailto:${CONTACT.email}`} variant="secondary" size="lg">
+            <Mail className="h-4 w-4" />
+            Report a broken link
+          </Button>
         </div>
-
-        <h1 className="mb-4 font-space text-8xl font-bold tracking-tighter text-ink">404</h1>
-
-        <p className="mb-3 font-space text-base font-semibold uppercase tracking-[0.2em] text-accent">
-          Directory node not found
-        </p>
-
-        <p className="mb-8 max-w-sm font-poppins text-sm leading-relaxed text-ink-muted">
-          The server could not resolve the path you requested. Check the address, or head back to
-          the home page.
-        </p>
-
-        <Button href="/" size="lg">
-          <ArrowLeft className="h-4 w-4" />
-          Return to Base Node
-        </Button>
       </main>
 
       <Footer />

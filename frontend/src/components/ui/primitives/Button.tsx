@@ -7,7 +7,7 @@ export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'accent-soft';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 const VARIANTS: Record<ButtonVariant, string> = {
-  // Dark ink on a bright accent fill — 9.2:1, versus 2.6:1 for white-on-cyan.
+  // Dark ink on the gold fill — 9.6:1. White on gold would be 2.1:1.
   primary:
     'bg-accent text-accent-ink border border-accent hover:bg-accent-hover hover:border-accent-hover',
   secondary:
@@ -19,14 +19,14 @@ const VARIANTS: Record<ButtonVariant, string> = {
 };
 
 const SIZES: Record<ButtonSize, string> = {
-  sm: 'px-3.5 py-2 text-[10px] gap-1.5',
-  md: 'px-5 py-2.5 text-[11px] gap-2',
-  lg: 'px-7 py-3.5 text-xs gap-2.5',
+  sm: 'px-3.5 py-2 text-[11px] gap-1.5',
+  md: 'px-5 py-2.5 text-xs gap-2',
+  lg: 'px-7 py-3.5 text-[13px] gap-2.5',
 };
 
 const BASE =
-  'inline-flex items-center justify-center rounded-lg font-space font-medium uppercase tracking-widest ' +
-  'transition-colors duration-200 cursor-pointer select-none ' +
+  'inline-flex items-center justify-center rounded-lg font-display font-medium tracking-wide ' +
+  'transition-colors duration-200 cursor-pointer select-none whitespace-nowrap ' +
   'disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none';
 
 type CommonProps = {
@@ -38,14 +38,10 @@ type CommonProps = {
 };
 
 type ButtonAsButton = CommonProps &
-  Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, keyof CommonProps> & {
-    href?: undefined;
-  };
+  Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, keyof CommonProps> & { href?: undefined };
 
 type ButtonAsAnchor = CommonProps &
-  Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, keyof CommonProps> & {
-    href: string;
-  };
+  Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, keyof CommonProps> & { href: string };
 
 export type ButtonProps = ButtonAsButton | ButtonAsAnchor;
 
@@ -62,9 +58,8 @@ export default function Button(props: ButtonProps) {
   const classes = cn(BASE, VARIANTS[variant], SIZES[size], fullWidth && 'w-full', className);
 
   if (typeof rest.href === 'string') {
-    const anchorProps = rest as React.AnchorHTMLAttributes<HTMLAnchorElement>;
     return (
-      <a {...anchorProps} className={classes}>
+      <a {...(rest as React.AnchorHTMLAttributes<HTMLAnchorElement>)} className={classes}>
         {children}
       </a>
     );

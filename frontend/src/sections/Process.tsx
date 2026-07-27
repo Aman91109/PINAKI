@@ -1,65 +1,67 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { MessageSquare, Cpu, Palette, Code2, ShieldAlert, Cloud, HelpCircle } from 'lucide-react';
-import { Card, Section, SectionHeading } from '@/components/ui/primitives';
+import { PhoneCall, Ruler, Frame, Code2, ShieldCheck, Rocket } from 'lucide-react';
+import { Section, SectionHeading } from '@/components/ui/primitives';
 
+/**
+ * Steps are framed around what the client receives at each stage. The previous
+ * version credited each phase to a "phase lead" who did not exist.
+ */
 const processSteps = [
   {
     step: '01',
-    name: 'Requirement Discussion',
-    icon: MessageSquare,
+    name: 'Discovery call',
+    icon: PhoneCall,
+    duration: '30 minutes, free',
     description:
-      'We hold exhaustive consultation sessions to examine your goals, establish scopes, define project deadlines, and formulate the budget tier.',
-    lead: 'Elena Rostova (Creative Director)',
+      'We talk through what you are trying to achieve, what already exists, and what success looks like. If we are not the right fit we say so on this call.',
+    deliverable: 'A written scope and a fixed quote — no obligation',
   },
   {
     step: '02',
-    name: 'Planning & Architecture',
-    icon: Cpu,
+    name: 'Architecture & plan',
+    icon: Ruler,
+    duration: '3–5 days',
     description:
-      'Aiden structures database tables (Mongoose collections), outlines REST controllers, and plans AI/ML models to guarantee clean layouts.',
-    lead: 'Aiden Vance (Systems Architect)',
+      'We map the data model, pick the stack, identify the risky parts early and break the work into milestones you can track.',
+    deliverable: 'Technical plan with dated milestones',
   },
   {
     step: '03',
-    name: 'UI/UX Visual Design',
-    icon: Palette,
+    name: 'Interface design',
+    icon: Frame,
+    duration: '1–2 weeks',
     description:
-      'Elena builds interactive prototypes in Figma, mapping user flows and creating dark-theme layouts that command premium authority.',
-    lead: 'Elena Rostova (Creative Director)',
+      'Wireframes first, then high-fidelity screens in Figma. You review and sign off before a single component gets built.',
+    deliverable: 'Clickable Figma prototype',
   },
   {
     step: '04',
-    name: 'Code Development',
+    name: 'Build',
     icon: Code2,
+    duration: '2–10 weeks',
     description:
-      'Zephyr compiles the responsive Next.js 15 frontend with Framer Motion, and Aiden builds the Node/Express backend endpoints with JWT.',
-    lead: 'Zephyr Croft (Lead Developer)',
+      'We work in weekly increments against the milestone plan. You get a staging URL from week one, so progress is visible rather than described.',
+    deliverable: 'Weekly demo build on a live staging link',
   },
   {
     step: '05',
-    name: 'Rigorous Testing',
-    icon: ShieldAlert,
+    name: 'Test & harden',
+    icon: ShieldCheck,
+    duration: '3–7 days',
     description:
-      'We run security checks on auth middlewares, debug files upload pipelines, audit API query speeds, and compile TS build checks.',
-    lead: 'Zephyr & Aiden (Engineering)',
+      'Auth flows, file uploads and API limits get exercised properly. We run performance and accessibility passes before anything reaches your users.',
+    deliverable: 'Test report and security checklist',
   },
   {
     step: '06',
-    name: 'Deployment & Launch',
-    icon: Cloud,
+    name: 'Launch & support',
+    icon: Rocket,
+    duration: 'Ongoing',
     description:
-      'Your frontend is deployed to Vercel, the Express server is hosted on Render, and MongoDB databases are mapped on Atlas CDN configurations.',
-    lead: 'Aiden Vance (Systems Architect)',
-  },
-  {
-    step: '07',
-    name: 'Dedicated Support',
-    icon: HelpCircle,
-    description:
-      'Pinaki provides round-the-clock maintenance agreements, dependency updates, weekly database backups, and feature enhancements.',
-    lead: 'Pinaki Support Engineers',
+      'We deploy, monitor the first weeks closely and hand over documentation. Retainers are available if you want us on call after that.',
+    deliverable: 'Deployed app, docs and a handover session',
   },
 ];
 
@@ -67,56 +69,53 @@ export default function Process() {
   return (
     <Section id="process" tone="raised" width="lg">
       <SectionHeading
-        eyebrow="Methodology"
-        title="How We Translate Ideas To Production"
-        align="center"
+        index="03"
+        eyebrow="How we work"
+        title="A process designed so you are never guessing."
+        description="Six stages, each with something concrete at the end of it. You always know what is happening, what it costs and when it lands."
       />
 
-      {/* Timeline rail */}
-      <ol className="relative ml-3 flex flex-col gap-8 border-l border-line pl-8 md:ml-6 md:pl-12">
+      <ol className="grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-line bg-line md:grid-cols-2">
         {processSteps.map((proc, idx) => {
           const IconComp = proc.icon;
           return (
             <motion.li
               key={proc.step}
-              initial={{ opacity: 0, x: -16 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: '-50px' }}
-              transition={{ duration: 0.5, delay: idx * 0.06 }}
-              className="relative"
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.4, delay: (idx % 2) * 0.08 }}
+              className="flex flex-col bg-surface p-7"
             >
-              {/* Node on the rail */}
-              <span
-                aria-hidden
-                className="absolute -left-[41px] top-6 flex h-[26px] w-[26px] items-center justify-center rounded-full border-4 border-canvas-raised bg-accent font-mono text-[9px] font-bold text-accent-ink md:-left-[61px] md:h-8 md:w-8 md:text-[10px]"
-              >
-                {proc.step}
+              <div className="mb-5 flex items-center justify-between gap-4">
+                <span className="font-mono text-3xl font-bold tracking-tight text-line-strong">
+                  {proc.step}
+                </span>
+                <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-accent-line bg-accent-soft text-accent">
+                  <IconComp className="h-4 w-4" />
+                </span>
+              </div>
+
+              <h3 className="font-display text-lg font-bold tracking-tight text-ink">
+                {proc.name}
+              </h3>
+
+              <span className="mt-1 font-mono text-[10px] uppercase tracking-wider text-ink-subtle">
+                {proc.duration}
               </span>
 
-              <Card padding="lg">
-                <div className="mb-4 flex items-start justify-between gap-4">
-                  <div>
-                    <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink-subtle">
-                      Step {proc.step}
-                    </span>
-                    <h3 className="mt-1 font-space text-lg font-bold text-ink md:text-xl">
-                      {proc.name}
-                    </h3>
-                  </div>
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-accent-line bg-accent-soft text-accent">
-                    <IconComp className="h-4 w-4" />
+              <p className="mt-3.5 text-sm leading-relaxed text-ink-muted">{proc.description}</p>
+
+              <p className="mt-auto flex items-start gap-2 pt-6 text-[13px] text-ink">
+                <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-accent" />
+                <span>
+                  <span className="font-mono text-[10px] uppercase tracking-wider text-ink-subtle">
+                    You receive
                   </span>
-                </div>
-
-                <p className="mb-5 max-w-2xl font-poppins text-xs leading-relaxed text-ink-muted md:text-sm">
-                  {proc.description}
-                </p>
-
-                <p className="flex w-max max-w-full flex-wrap items-center gap-2 rounded-lg border border-line bg-surface-inset px-3 py-2 font-mono text-[10px] md:text-xs">
-                  <span className="text-ink-subtle">Phase lead:</span>
-                  <span className="text-accent">{proc.lead}</span>
-                </p>
-              </Card>
+                  <br />
+                  {proc.deliverable}
+                </span>
+              </p>
             </motion.li>
           );
         })}

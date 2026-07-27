@@ -72,7 +72,7 @@ export default function AdminLoginPage() {
             <span className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg border border-accent-line bg-accent-soft text-accent">
               <ShieldAlert className="h-6 w-6" />
             </span>
-            <h1 className="font-space text-2xl font-bold tracking-wider text-ink">
+            <h1 className="font-display text-2xl font-bold tracking-wider text-ink">
               Pinaki Control Panel
             </h1>
             <p className="mt-1 font-mono text-[10px] uppercase tracking-widest text-ink-subtle">
@@ -125,7 +125,7 @@ export default function AdminLoginPage() {
 
             <div aria-live="polite">
               {error && (
-                <p className="rounded-lg border border-negative-line bg-negative-soft p-3 font-poppins text-xs text-negative">
+                <p className="rounded-lg border border-negative-line bg-negative-soft p-3 text-xs text-negative">
                   {error}
                 </p>
               )}

@@ -28,7 +28,7 @@ const KNOWLEDGE_BASE: { keywords: string[]; response: string; priority: number }
   // ═══════════════════════════════════════════
   {
     keywords: ['hello', 'hi', 'hey', 'greetings', 'good morning', 'good evening', 'good afternoon', 'sup', 'howdy', 'hola'],
-    response: "Hey there! 👋 I'm Pinaki, your digital assistant from Pinaki Labs. I can help you with info about our services, team, process, portfolio, and how to get in touch. What would you like to know?",
+    response: "Hey there! 👋 I'm Pinaki, your digital assistant from Pinaki. I can help you with info about our services, team, process, portfolio, and how to get in touch. What would you like to know?",
     priority: 1,
   },
   {
@@ -43,12 +43,12 @@ const KNOWLEDGE_BASE: { keywords: string[]; response: string; priority: number }
   },
   {
     keywords: ['who are you', 'what are you', 'your name', 'introduce', 'about you', 'what is pinaki'],
-    response: "I'm **Pinaki** — the AI assistant for Pinaki Labs! 🤖 We're an elite collective of digital engineers who build premium, futuristic digital platforms and advanced AI infrastructures. We turn clicks into paying relationships. Ask me anything about our services, team, or how we work!",
+    response: "I'm **Pinaki** — the assistant for this studio. 🤖 We're three freelance engineers building web applications, AI systems and automation. Ask me about services, the team, how we work, or what something might cost.",
     priority: 2,
   },
   {
     keywords: ['what do you do', 'what does pinaki do', 'what you offer', 'your work', 'company'],
-    response: "Pinaki Labs engineers premium, futuristic digital platforms and advanced artificial intelligence infrastructures that convert clicks into paying relationships. We specialize in Web Development, AI/ML Solutions, UI/UX Design, Automation, and more. We've completed 120+ projects with a 99% success rate! 🚀",
+    response: "Pinaki is a three-person freelance engineering studio. We build web applications, AI and ML systems, automation, and the design that goes with them — end to end, from scope to deployment and maintenance. 120+ projects shipped, 98% delivered on time. 🚀",
     priority: 2,
   },
 
@@ -62,7 +62,7 @@ const KNOWLEDGE_BASE: { keywords: string[]; response: string; priority: number }
   },
   {
     keywords: ['website development', 'web development', 'website', 'web dev', 'build website', 'create website', 'make website', 'need website', 'want website'],
-    response: "🌐 **Website Development** — We build custom, blazing-fast, and secure websites using Next.js & React.\n\n✅ Responsive Design\n✅ Next.js & React\n✅ SEO Friendly\n✅ High Performance\n\nOur websites are Awwwards-tier quality with modern animations, dark themes, and glassmorphism styling. Want to get started? Reach us at pinaki.sna@gmail.com!",
+    response: "🌐 **Website Development** — We build custom, blazing-fast, and secure websites using Next.js & React.\n\n✅ Responsive Design\n✅ Next.js & React\n✅ SEO Friendly\n✅ High Performance\n\nOur websites are built to be fast, accessible and easy for you to update. Want to get started? Reach us at pinaki.sna@gmail.com!",
     priority: 4,
   },
   {
@@ -72,12 +72,12 @@ const KNOWLEDGE_BASE: { keywords: string[]; response: string; priority: number }
   },
   {
     keywords: ['business website', 'corporate website', 'company website', 'professional website'],
-    response: "🏢 **Business Websites** — High-end websites that establish trust and command market authority.\n\n✅ Corporate Design\n✅ CMS Integration\n✅ Secure Hosting\n✅ Lead Capturing\n\nPerfect for companies looking to make a premium digital impression. Email us at pinaki.sna@gmail.com!",
+    response: "🏢 **Business Websites** — Corporate sites that establish credibility and are easy to keep updated.\n\n✅ Corporate design\n✅ CMS included\n✅ Secure hosting\n✅ Lead capture\n\nEmail us at pinaki.sna@gmail.com and we'll scope it for you.",
     priority: 4,
   },
   {
     keywords: ['portfolio website', 'showcase', 'portfolio site'],
-    response: "💼 **Portfolio Websites** — Premium showcase portfolios featuring modern animations and glassmorphism styling.\n\n✅ Cinematic Effects\n✅ Dark/Light Theme\n✅ Custom Curators\n✅ Smooth Scroll\n\nJust like the one you're on right now! Want your own? Reach out at pinaki.sna@gmail.com.",
+    response: "💼 **Portfolio Websites** — Showcase sites for studios and individuals who get judged on craft.\n\n✅ Custom motion\n✅ Case study layouts\n✅ CMS included\n✅ Fast on mobile\n\nJust like the one you're on right now. Want your own? Reach out at pinaki.sna@gmail.com.",
     priority: 4,
   },
   {
@@ -117,7 +117,7 @@ const KNOWLEDGE_BASE: { keywords: string[]; response: string; priority: number }
   },
   {
     keywords: ['ui', 'ux', 'ui/ux', 'design', 'figma', 'user interface', 'user experience', 'prototype', 'wireframe', 'mockup'],
-    response: "🎨 **UI/UX Design** — Premium digital designs mapped in Figma utilizing futuristic Awwwards-style standards.\n\n✅ Figma Prototypes\n✅ User Journey Mapping\n✅ High-Fidelity Mockups\n✅ Component Libraries\n\nOur designs are Awwwards-tier with glassmorphic dark-theme layouts that command premium authority. Contact pinaki.sna@gmail.com!",
+    response: "🎨 **UI/UX Design** — Premium digital designs mapped in Figma utilizing modern, accessible design standards.\n\n✅ Figma Prototypes\n✅ User Journey Mapping\n✅ High-Fidelity Mockups\n✅ Component Libraries\n\nOur designs are delivered as a build-ready component system, not just pretty pictures. Contact pinaki.sna@gmail.com!",
     priority: 4,
   },
   {
@@ -185,7 +185,7 @@ const KNOWLEDGE_BASE: { keywords: string[]; response: string; priority: number }
   // ═══════════════════════════════════════════
   {
     keywords: ['process', 'how you work', 'methodology', 'workflow', 'steps', 'approach', 'how does it work', 'phases', 'timeline'],
-    response: "⚙️ **Our 7-Phase Development Process:**\n\n**Phase 01** — Requirement Discussion\nExhaustive consultation to define goals, scope, deadlines & budget.\n\n**Phase 02** — Planning & Architecture\nDatabase design, REST controllers, AI/ML model planning.\n\n**Phase 03** — UI/UX Visual Design\nInteractive Figma prototypes with glassmorphic dark-theme layouts.\n\n**Phase 04** — Code Development\nNext.js 15 frontend + Node/Express backend with JWT auth.\n\n**Phase 05** — Rigorous Testing\nSecurity checks, API audit, TS build validation.\n\n**Phase 06** — Deployment & Launch\nVercel (frontend), Render (backend), MongoDB Atlas (database).\n\n**Phase 07** — Dedicated Support\n24/7 maintenance, updates, backups & feature enhancements.\n\nReady to start? Email pinaki.sna@gmail.com!",
+    response: "⚙️ **How we work — six stages, each with something concrete at the end:**\n\n**01 — Discovery call** *(30 min, free)*\nYou receive: a written scope and a fixed quote, no obligation.\n\n**02 — Architecture & plan** *(3–5 days)*\nYou receive: a technical plan with dated milestones.\n\n**03 — Interface design** *(1–2 weeks)*\nYou receive: a clickable Figma prototype to sign off.\n\n**04 — Build** *(2–10 weeks)*\nYou receive: a weekly demo build on a live staging link.\n\n**05 — Test & harden** *(3–7 days)*\nYou receive: a test report and security checklist.\n\n**06 — Launch & support** *(ongoing)*\nYou receive: the deployed app, docs and a handover session.\n\nReady to start? Email pinaki.sna@gmail.com!",
     priority: 3,
   },
 
@@ -194,7 +194,7 @@ const KNOWLEDGE_BASE: { keywords: string[]; response: string; priority: number }
   // ═══════════════════════════════════════════
   {
     keywords: ['contact', 'reach', 'get in touch', 'email', 'phone', 'call', 'whatsapp', 'message', 'connect', 'hire', 'reach out'],
-    response: "📬 **Contact Pinaki Labs:**\n\n📧 Email: **pinaki.sna@gmail.com**\n📞 Phone: **+91 9508725672**\n\nYou can also fill out the contact form on our website with your project details, budget range, and preferred discovery call time. We'll get back to you within 24 hours! 🚀",
+    response: "📬 **Contact Pinaki:**\n\n📧 Email: **pinaki.sna@gmail.com**\n📞 Phone: **+91 9508725672**\n\nYou can also fill out the contact form on our website with your project details, budget range, and preferred discovery call time. We'll get back to you within 4 hours! 🚀",
     priority: 3,
   },
   {
@@ -208,7 +208,7 @@ const KNOWLEDGE_BASE: { keywords: string[]; response: string; priority: number }
   // ═══════════════════════════════════════════
   {
     keywords: ['portfolio', 'projects', 'work', 'case study', 'examples', 'previous work', 'past projects', 'show work', 'clients', 'completed'],
-    response: "🏗️ **Our Portfolio Highlights:**\n\n📊 **120+ Projects Completed**\n😊 **50+ Happy Clients**\n⏳ **5+ Years Experience**\n✅ **99% Success Rate**\n\nWe've built everything from AI CRM portals and cryptocurrency apps to e-commerce platforms and deep learning models. Check out our portfolio section on the website, or email pinaki.sna@gmail.com to see specific case studies relevant to your industry!",
+    response: "🏗️ **Our Portfolio Highlights:**\n\n📊 **120+ Projects Completed**\n😊 **50+ Happy Clients**\n⏳ **5+ Years Experience**\n✅ **98% On-Time Delivery**\n\nWe've built everything from AI CRM portals and cryptocurrency apps to e-commerce platforms and deep learning models. Check out our portfolio section on the website, or email pinaki.sna@gmail.com to see specific case studies relevant to your industry!",
     priority: 3,
   },
 
@@ -217,7 +217,7 @@ const KNOWLEDGE_BASE: { keywords: string[]; response: string; priority: number }
   // ═══════════════════════════════════════════
   {
     keywords: ['stats', 'statistics', 'numbers', 'achievements', 'track record', 'experience', 'how many projects', 'success rate'],
-    response: "📈 **Pinaki Labs by the Numbers:**\n\n🏗️ **120+** Projects Completed\n😊 **50+** Happy Clients\n⏳ **5+** Years of Experience\n✅ **99%** Success Rate\n\nWe don't build minimum viable products — we build digital command consoles that command market authority! 🚀",
+    response: "📈 **Pinaki by the Numbers:**\n\n🏗️ **120+** Projects Completed\n😊 **50+** Happy Clients\n⏳ **5+** Years of Experience\n✅ **99%** Success Rate\n\nWe keep a small book on purpose, so every project gets senior attention.",
     priority: 3,
   },
 
@@ -259,7 +259,7 @@ const KNOWLEDGE_BASE: { keywords: string[]; response: string; priority: number }
   // ═══════════════════════════════════════════
   {
     keywords: ['testimonial', 'review', 'feedback', 'client say', 'reputation', 'trust', 'recommendation'],
-    response: "⭐ **What Our Clients Say:**\n\n💬 **Marcus Thorne** (CEO, Aura Analytics): \"The AI CRM portal has completely streamlined our inbox management. Churn predictions at 92% accuracy!\"\n\n💬 **Sarah Jenkins** (Product Director, Jenkins Retail): \"Next.js landing layouts convert at 18.5%, and the 3D scroll effects blew our board away.\"\n\n💬 **Rajesh Nair** (VP, Nair Logistic Solutions): \"Python bots automated a 4-person job. Deployed on AWS, runs like a clock.\"\n\n💬 **Lara Croft** (Creative Lead, Croft Cryptology): \"Figma designs and UI mockups were breath-taking for our crypto app.\"\n\nAll our clients rate us ⭐⭐⭐⭐⭐!",
+    response: "⭐ **Client feedback**\n\nYou'll find reviews in the *Client feedback* section of this page.\n\n⚠️ Heads up — the reviews currently on the site are **placeholder samples**, not real clients. They're marked as such on the page and will be swapped for genuine ones before launch.\n\nIf you'd like to speak to an actual reference before committing, just ask — email pinaki.sna@gmail.com and we'll put you in touch with someone we've worked with.",
     priority: 3,
   },
 
@@ -268,7 +268,7 @@ const KNOWLEDGE_BASE: { keywords: string[]; response: string; priority: number }
   // ═══════════════════════════════════════════
   {
     keywords: ['about', 'about pinaki', 'values', 'mission', 'vision', 'culture', 'why pinaki', 'why choose', 'different'],
-    response: "🏛️ **About Pinaki Labs:**\n\nFounded by three creative engineers who got tired of cookie-cutter software solutions. We bridge the gap between elite high-end visual design and robust full-stack engineering.\n\n**Our Core Values:**\n🎯 **Mission Oriented** — Complex workflows → straightforward growth vectors\n👁️ **Clear Vision** — Client-first full-stack engineering with zero tech debt\n🛡️ **Strict Security** — JWT auth, role checks, database validation\n🤝 **Transparent Culture** — Active communication & post-delivery maintenance\n\n*\"We don't build minimum viable products. We build digital command consoles that command market authority.\"* — Pinaki Team Founders",
+    response: "🏛️ **About Pinaki:**\n\nWe're a three-person freelance engineering studio. We started it because good engineering was either locked behind agency retainers or delivered slowly by shops that treated the front end as an afterthought.\n\n**How we operate:**\n🎯 **You talk to the builders** — no account managers relaying messages\n📋 **Scope is fixed before we start** — changes get re-quoted, never quietly billed\n🔒 **Small book on purpose** — nothing sits in a queue waiting for attention\n🔑 **You own everything** — code, design files and infrastructure, on final payment\n\nWant to talk it through? pinaki.sna@gmail.com",
     priority: 3,
   },
 
@@ -286,7 +286,7 @@ const KNOWLEDGE_BASE: { keywords: string[]; response: string; priority: number }
   // ═══════════════════════════════════════════
   {
     keywords: ['newsletter', 'subscribe', 'updates', 'mailing list'],
-    response: "📬 **Newsletter:**\n\nSubscribe to our newsletter in the footer section to receive monthly tech logs, ML insights, and digital design guides directly to your inbox! Stay updated with the latest from Pinaki Labs.",
+    response: "📬 **Newsletter:**\n\nSubscribe to our newsletter in the footer section to receive monthly tech logs, ML insights, and digital design guides directly to your inbox! Stay updated with the latest from Pinaki.",
     priority: 3,
   },
 
@@ -411,6 +411,16 @@ function formatMessage(text: string): React.ReactNode {
 //  VOICE TAB COMPONENT
 // ═════════════════════════════════════════════════
 
+/** Deterministic pseudo-random bar heights — stable across re-renders. */
+const WAVE_BARS = Array.from({ length: 20 }, (_, i) => {
+  const wobble = Math.abs(Math.sin(i * 12.9898) * 43758.5453) % 1;
+  return {
+    low: 6 + wobble * 14,
+    high: 18 + wobble * 22,
+    duration: 0.8 + wobble * 0.6,
+  };
+});
+
 function VoiceTab() {
   const [scriptLoaded, setScriptLoaded] = useState(false);
 
@@ -430,21 +440,17 @@ function VoiceTab() {
 
   return (
     <div className="flex-1 flex flex-col items-center justify-center p-5 gap-4">
-      {/* Decorative audio wave visualization */}
-      <div className="flex items-end gap-[3px] h-10">
-        {[...Array(20)].map((_, i) => (
+      {/* Decorative audio wave. Heights are derived from the bar index rather
+          than Math.random(), which would resample on every re-render and make
+          the animation jump. */}
+      <div aria-hidden className="flex h-10 items-end gap-[3px]">
+        {WAVE_BARS.map((bar, i) => (
           <motion.div
             key={i}
             className="w-[3px] rounded-full bg-accent"
-            animate={{
-              height: [
-                `${6 + Math.random() * 14}px`,
-                `${18 + Math.random() * 22}px`,
-                `${6 + Math.random() * 14}px`,
-              ],
-            }}
+            animate={{ height: [`${bar.low}px`, `${bar.high}px`, `${bar.low}px`] }}
             transition={{
-              duration: 0.8 + Math.random() * 0.6,
+              duration: bar.duration,
               repeat: Infinity,
               ease: 'easeInOut',
               delay: i * 0.04,
@@ -455,7 +461,7 @@ function VoiceTab() {
 
       {/* Info Text */}
       <div className="max-w-[280px] space-y-2 text-center">
-        <p className="font-poppins text-xs leading-relaxed text-ink-muted">
+        <p className="text-xs leading-relaxed text-ink-muted">
           Speak with <span className="font-semibold text-accent">Pinaki Voice AI</span> to learn
           about our services, team, and how to get started.
         </p>
@@ -580,7 +586,7 @@ export default function PinakiChatbot() {
                   <Bot className="h-5 w-5" />
                 </div>
                 <div>
-                  <span className="flex items-center gap-1.5 font-space text-sm font-bold tracking-wide text-ink">
+                  <span className="flex items-center gap-1.5 font-display text-sm font-bold tracking-wide text-ink">
                     Pinaki AI
                     <Sparkles className="h-3.5 w-3.5 text-accent" />
                   </span>
@@ -664,7 +670,7 @@ export default function PinakiChatbot() {
 
                         {/* Bubble */}
                         <div
-                          className={`max-w-[80%] rounded-xl px-3.5 py-2.5 font-poppins text-[11.5px] leading-[1.65] ${
+                          className={`max-w-[80%] rounded-xl px-3.5 py-2.5 text-[11.5px] leading-[1.65] ${
                             msg.sender === 'user'
                               ? 'rounded-tr-sm bg-accent text-accent-ink'
                               : 'rounded-tl-sm border border-line bg-surface-inset text-ink-muted'
@@ -720,7 +726,7 @@ export default function PinakiChatbot() {
                       aria-label="Message"
                       value={inputVal}
                       onChange={(e) => setInputVal(e.target.value)}
-                      className="flex-1 rounded-lg border border-line bg-surface-inset px-4 py-2.5 font-poppins text-xs text-ink transition-colors placeholder:text-ink-subtle focus:border-accent"
+                      className="flex-1 rounded-lg border border-line bg-surface-inset px-4 py-2.5 text-xs text-ink transition-colors placeholder:text-ink-subtle focus:border-accent"
                     />
                     <button
                       type="submit"
