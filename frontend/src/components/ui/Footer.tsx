@@ -105,9 +105,11 @@ export default function Footer() {
           </h4>
           <div className="flex flex-col gap-3 font-poppins text-xs text-[#EDEDED]/60">
             <a href="mailto:pinaki.sna@gmail.com" className="hover:text-[#06B6D4] transition-colors">pinaki.sna@gmail.com</a>
-            <p>+91 9508725672</p>
-            <p>Cyber Node Room #1337</p>
-            <p>Silicon Valley, California</p>
+            <a href="tel:+919508725672" className="hover:text-[#06B6D4] transition-colors">+91 9508725672</a>
+            <a href="tel:+918210686793" className="hover:text-[#06B6D4] transition-colors">+91 8210686793</a>
+            <a href="tel:+917079673468" className="hover:text-[#06B6D4] transition-colors">+91 7079673468</a>
+            <p>Sector 62, Noida</p>
+            <p>New Delhi NCR, India</p>
           </div>
         </div>
 

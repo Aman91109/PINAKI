@@ -28,7 +28,7 @@ const KNOWLEDGE_BASE: { keywords: string[]; response: string; priority: number }
   // ═══════════════════════════════════════════
   {
     keywords: ['hello', 'hi', 'hey', 'greetings', 'good morning', 'good evening', 'good afternoon', 'sup', 'howdy', 'hola'],
-    response: "Hey there! 👋 I'm Pinaki, your digital assistant from Pinaki Labs. I can help you with info about our services, pricing, team, process, portfolio, and more. What would you like to know?",
+    response: "Hey there! 👋 I'm Pinaki, your digital assistant from Pinaki Labs. I can help you with info about our services, team, process, portfolio, and how to get in touch. What would you like to know?",
     priority: 1,
   },
   {
@@ -38,7 +38,7 @@ const KNOWLEDGE_BASE: { keywords: string[]; response: string; priority: number }
   },
   {
     keywords: ['thank', 'thanks', 'thank you', 'thx', 'appreciate'],
-    response: "You're welcome! 😊 Happy to help. If you have any more questions about our services, pricing, or anything else — just ask! We're always here for you.",
+    response: "You're welcome! 😊 Happy to help. If you have any more questions about our services, team, or anything else — just ask! We're always here for you.",
     priority: 1,
   },
   {
@@ -142,28 +142,19 @@ const KNOWLEDGE_BASE: { keywords: string[]; response: string; priority: number }
   },
 
   // ═══════════════════════════════════════════
-  // PRICING
+  // PRICING / COST — Direct Contact
   // ═══════════════════════════════════════════
   {
     keywords: ['price', 'pricing', 'cost', 'how much', 'budget', 'rate', 'charge', 'fee', 'expensive', 'affordable', 'cheap', 'quote', 'estimate', 'money'],
-    response: "💰 **Our Pricing Plans:**\n\n🟢 **Starter — $1,999/Project**\n• High-Fidelity Figma UI/UX Design\n• Responsive Next.js Frontend\n• Standard Contact Form\n• Basic SEO Mapping\n• 3 Months Deployment Support\n\n🟣 **Professional — $4,999/Project** ⭐ RECOMMENDED\n• Full-Stack Next.js + Express API\n• Custom MongoDB Database\n• JWT Authentication & Panels\n• Framer Motion & GSAP Animations\n• 6 Months Maintenance & Backups\n\n🔵 **Enterprise — Custom Pricing**\n• Custom LLM / Fine-tuning\n• Deep Learning Models\n• Multi-user Role Admin CMS\n• Complex Three.js 3D Scenes\n• Lifetime Support & AWS Setup\n\nReady to discuss? Email pinaki.sna@gmail.com!",
+    response: "💬 **We don't have fixed price tags!**\n\nEvery project is unique, and we believe in transparent, personalised pricing. Our team will understand your exact requirements and share a custom quote — no hidden costs, no surprises.\n\n📞 **Call / WhatsApp us directly:**\n• +91 9508725672\n• +91 8210686793\n• +91 7079673468\n\n📧 **Email:** pinaki.sna@gmail.com\n\nJust reach out and we'll get back to you within a few hours! 🚀",
     priority: 5,
   },
   {
-    keywords: ['starter plan', 'starter', 'basic plan', '1999', '$1,999'],
-    response: "🟢 **Starter Plan — $1,999/Project**\n\nIncludes:\n• High-Fidelity Figma UI/UX Design\n• Responsive Next.js Frontend Website\n• Standard Contact Form Integration\n• Basic On-Page SEO Mapping\n• 3 Months Deployment Support\n\nPerfect for small businesses and personal projects. Contact pinaki.sna@gmail.com to get started!",
+    keywords: ['starter plan', 'starter', 'basic plan', 'professional plan', 'pro plan', 'enterprise plan', 'enterprise', 'custom plan', 'large project', 'big project'],
+    response: "🎯 **Custom Packages for Every Need:**\n\nWhether you're a student, startup, or an established business — we tailor our scope and pricing specifically for you.\n\n📞 **Talk to us directly:**\n• Call / WhatsApp: +91 9508725672\n• Call / WhatsApp: +91 8210686793\n• Call / WhatsApp: +91 7079673468\n• Email: pinaki.sna@gmail.com\n\nWe'll listen to your vision and craft the perfect plan! ✨",
     priority: 5,
   },
-  {
-    keywords: ['professional plan', 'pro plan', '4999', '$4,999', 'recommended plan'],
-    response: "🟣 **Professional Plan — $4,999/Project** ⭐ RECOMMENDED\n\nIncludes:\n• Full-Stack Next.js + Express API Server\n• Custom MongoDB Database Architecture\n• Secure JWT Authentication & Panels\n• Nodemailer SMTP System Alerts\n• Framer Motion & GSAP Scroll Interactions\n• 6 Months Maintenance & Backups\n\nOur most popular choice! Email pinaki.sna@gmail.com to discuss your requirements.",
-    priority: 5,
-  },
-  {
-    keywords: ['enterprise plan', 'enterprise', 'custom plan', 'large project', 'big project'],
-    response: "🔵 **Enterprise Plan — Custom Pricing**\n\nIncludes:\n• Custom LLM Integration / Fine-tuning\n• Deep Learning Predictive Models\n• Multi-user Role Admin Command CMS\n• Cloudinary & Multer File Pipelines\n• Complex Procedural Three.js 3D Scenes\n• Lifetime Patch Support & AWS Host Setup\n\nFor ambitious projects with advanced requirements. Contact pinaki.sna@gmail.com for a custom quote!",
-    priority: 5,
-  },
+
 
   // ═══════════════════════════════════════════
   // TEAM
@@ -208,7 +199,8 @@ const KNOWLEDGE_BASE: { keywords: string[]; response: string; priority: number }
   },
   {
     keywords: ['address', 'location', 'where', 'office', 'based', 'headquarter'],
-    response: "📍 **Our Location:**\nCyber Node Room #1337\nSilicon Valley, California\n\nWe also have active servers in Silicon Valley and Seoul. For inquiries, email pinaki.sna@gmail.com or call +91 9508725672.",
+    response: "📍 **Our Location:**\nSector 62, Noida\nNew Delhi NCR, India\n\nFor inquiries, reach us at:\n📞 Call / WhatsApp: +91 9508725672 | +91 8210686793 | +91 7079673468\n📧 Email: pinaki.sna@gmail.com",
+
     priority: 3,
   },
 
@@ -349,7 +341,7 @@ const KNOWLEDGE_BASE: { keywords: string[]; response: string; priority: number }
   // ═══════════════════════════════════════════
   {
     keywords: ['help', 'assist', 'guide', 'faq', 'question', 'doubt'],
-    response: "💡 **I can help you with:**\n\n• 🌐 Our Services (16 different offerings)\n• 💰 Pricing Plans (Starter, Professional, Enterprise)\n• 👨‍💻 Team Information (Somesh, Nishant, Aman)\n• ⚙️ Our Development Process (7 phases)\n• 📊 Portfolio & Stats (120+ projects)\n• 🛠️ Technology Stack\n• 📬 Contact Details\n• ⭐ Client Testimonials\n• ⏱️ Project Timelines\n• 🔐 Security Measures\n\nJust type your question and I'll provide detailed answers!",
+    response: "💡 **I can help you with:**\n\n• 🌐 Our Services (16 different offerings)\n• 👨‍💻 Team Information (Somesh, Nishant, Aman)\n• ⚙️ Our Development Process (7 phases)\n• 📊 Portfolio & Stats (120+ projects)\n• 🛠️ Technology Stack\n• 📬 Contact Details\n• ⭐ Client Testimonials\n• ⏱️ Project Timelines\n• 🔐 Security Measures\n• 💬 Custom Quote Discussion\n\nJust type your question and I'll provide detailed answers!",
     priority: 2,
   },
 ];
@@ -389,7 +381,7 @@ function findBestResponse(input: string): string {
   }
 
   // Fallback response
-  return "I appreciate your question! 🤔 While I might not have the exact answer to that, I can help you with information about our **services**, **pricing**, **team**, **process**, **portfolio**, and **contact details**.\n\nFor specific inquiries, please email us at **pinaki.sna@gmail.com** or call **+91 9508725672** — our team will get back to you within 24 hours!\n\nTry asking me about:\n• What services do you offer?\n• What are your prices?\n• Tell me about the team\n• How does your process work?";
+  return "I appreciate your question! 🤔 While I might not have the exact answer to that, I can help you with information about our **services**, **team**, **process**, **portfolio**, and **contact details**.\n\nFor specific inquiries or to discuss your project, reach us directly:\n📞 **Call / WhatsApp:** +91 9508725672 | +91 8210686793 | +91 7079673468\n📧 **Email:** pinaki.sna@gmail.com\n\nWe respond within a few hours! Try asking me about:\n• What services do you offer?\n• Tell me about the team\n• How does your process work?\n• How do I contact you?";
 }
 
 // ── Format message text with basic markdown ──
@@ -465,7 +457,7 @@ function VoiceTab() {
       {/* Info Text */}
       <div className="text-center space-y-2 max-w-[280px]">
         <p className="text-xs text-white/70 font-poppins leading-relaxed">
-          Speak with <span className="text-[#06B6D4] font-semibold">Pinaki Voice AI</span> to learn about our services, pricing, and process.
+          Speak with <span className="text-[#06B6D4] font-semibold">Pinaki Voice AI</span> to learn about our services, team, and how to get started.
         </p>
         <p className="text-[10px] text-white/30 font-mono tracking-wide uppercase">
           Click the microphone below to start
@@ -513,7 +505,7 @@ export default function PinakiChatbot() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       sender: 'bot',
-      text: "Hey! 👋 I'm **Pinaki**, your AI assistant. I know everything about our services, pricing, team, and more. Ask me anything!",
+      text: "Hey! 👋 I'm **Pinaki**, your AI assistant. I know everything about our services, team, portfolio, and how to connect with us. Ask me anything!",
       timestamp: new Date(),
     },
   ]);
@@ -552,12 +544,11 @@ export default function PinakiChatbot() {
     }, delay);
   };
 
-  // Quick suggestion chips
   const suggestions = [
     'Services',
-    'Pricing',
     'Team',
     'Contact',
+    'Portfolio',
   ];
 
   const handleSuggestion = (text: string) => {

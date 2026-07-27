@@ -2,16 +2,9 @@
 
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Phone, MessageSquare, Upload, Calendar as CalendarIcon, CheckCircle2, AlertCircle, Clock, MapPin } from 'lucide-react';
+import { Mail, Phone, MessageSquare, Calendar as CalendarIcon, CheckCircle2, AlertCircle, Clock, MapPin } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { API_BASE_URL } from '@/config';
-
-const budgets = [
-  '$1,000 - $3,000',
-  '$3,000 - $7,000',
-  '$7,000 - $15,000',
-  '$15,000+',
-];
 
 const projectTypes = [
   'Web Development',
@@ -27,29 +20,19 @@ export default function Contact() {
     email: '',
     phone: '',
     company: '',
-    budget: '$3,000 - $7,000',
     projectType: 'Web Development',
     message: '',
   });
 
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
-  const [file, setFile] = useState<File | null>(null);
 
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [feedbackMsg, setFeedbackMsg] = useState('');
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
-    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -62,54 +45,43 @@ export default function Contact() {
 
     setStatus('submitting');
     try {
-      // Use FormData to allow file attachments
       const bodyData = new FormData();
       bodyData.append('name', formData.name);
       bodyData.append('email', formData.email);
       bodyData.append('phone', formData.phone);
       bodyData.append('company', formData.company);
-      bodyData.append('budget', formData.budget);
       bodyData.append('projectType', formData.projectType);
-      
-      // Append booking info if selected
+
       let finalMessage = formData.message;
       if (selectedDate && selectedTime) {
-        finalMessage += `\n\n[SIMULATED DISCOVERY CALL SCHEDULED: ${selectedDate} at ${selectedTime}]`;
+        finalMessage += `\n\n[DISCOVERY CALL REQUESTED: ${selectedDate} at ${selectedTime}]`;
       }
       bodyData.append('message', finalMessage);
 
-      if (file) {
-        bodyData.append('fileAttachment', file);
-      }
-
       const res = await fetch(`${API_BASE_URL}/api/public/lead`, {
         method: 'POST',
-        body: bodyData, // Multi-part form-data
+        body: bodyData,
       });
 
       const data = await res.json();
       if (data.success) {
         setStatus('success');
         setFeedbackMsg(data.message || 'Inquiry submitted successfully!');
-        
-        // Trigger celebratory fireworks confetti!
+
         confetti({
           particleCount: 150,
           spread: 80,
-          origin: { y: 0.6 }
+          origin: { y: 0.6 },
         });
 
-        // Reset Form
         setFormData({
           name: '',
           email: '',
           phone: '',
           company: '',
-          budget: '$3,000 - $7,000',
           projectType: 'Web Development',
           message: '',
         });
-        setFile(null);
         setSelectedDate('');
         setSelectedTime('');
       } else {
@@ -161,33 +133,35 @@ export default function Contact() {
                 </div>
               </a>
 
-              <a
-                href="https://wa.me/15557329099"
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center gap-4 p-4 rounded-xl border border-white/5 bg-[#111720]/45 hover:border-green-500/40 hover:bg-green-500/5 transition-all duration-300"
-              >
-                <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center text-green-400">
-                  <MessageSquare className="w-4 h-4" />
-                </div>
-                <div>
+              {/* WhatsApp — three numbers */}
+              <div className="flex flex-col gap-2 p-4 rounded-xl border border-white/5 bg-[#111720]/45 hover:border-green-500/40 hover:bg-green-500/5 transition-all duration-300">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center text-green-400 shrink-0">
+                    <MessageSquare className="w-4 h-4" />
+                  </div>
                   <span className="block text-[10px] font-mono text-[#EDEDED]/40 uppercase tracking-widest">WhatsApp Direct</span>
-                  <span className="text-xs font-space text-white">+1 (555) 732-9099</span>
                 </div>
-              </a>
+                <div className="flex flex-col gap-1 pl-14">
+                  <a href="https://wa.me/919508725672" target="_blank" rel="noreferrer" className="text-xs font-space text-white hover:text-green-400 transition-colors">+91 9508725672</a>
+                  <a href="https://wa.me/918210686793" target="_blank" rel="noreferrer" className="text-xs font-space text-white hover:text-green-400 transition-colors">+91 8210686793</a>
+                  <a href="https://wa.me/917079673468" target="_blank" rel="noreferrer" className="text-xs font-space text-white hover:text-green-400 transition-colors">+91 7079673468</a>
+                </div>
+              </div>
 
-              <a
-                href="tel:+15557329099"
-                className="flex items-center gap-4 p-4 rounded-xl border border-white/5 bg-[#111720]/45 hover:border-[#06B6D4]/40 hover:bg-[#06B6D4]/5 transition-all duration-300"
-              >
-                <div className="w-10 h-10 rounded-lg bg-[#06B6D4]/10 flex items-center justify-center text-[#06B6D4]">
-                  <Phone className="w-4 h-4" />
+              {/* Direct Call — three numbers */}
+              <div className="flex flex-col gap-2 p-4 rounded-xl border border-white/5 bg-[#111720]/45 hover:border-[#06B6D4]/40 hover:bg-[#06B6D4]/5 transition-all duration-300">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-lg bg-[#06B6D4]/10 flex items-center justify-center text-[#06B6D4] shrink-0">
+                    <Phone className="w-4 h-4" />
+                  </div>
+                  <span className="block text-[10px] font-mono text-[#EDEDED]/40 uppercase tracking-widest">Direct Call</span>
                 </div>
-                <div>
-                  <span className="block text-[10px] font-mono text-[#EDEDED]/40 uppercase tracking-widest">Direct Line</span>
-                  <span className="text-xs font-space text-white">+1 (555) 732-9099</span>
+                <div className="flex flex-col gap-1 pl-14">
+                  <a href="tel:+919508725672" className="text-xs font-space text-white hover:text-[#06B6D4] transition-colors">+91 9508725672</a>
+                  <a href="tel:+918210686793" className="text-xs font-space text-white hover:text-[#06B6D4] transition-colors">+91 8210686793</a>
+                  <a href="tel:+917079673468" className="text-xs font-space text-white hover:text-[#06B6D4] transition-colors">+91 7079673468</a>
                 </div>
-              </a>
+              </div>
             </div>
 
             {/* Calendar Booking Simulation */}
@@ -197,7 +171,7 @@ export default function Contact() {
                 Schedule Discovery Call
               </h4>
               <p className="font-poppins text-xs text-[#EDEDED]/50 leading-relaxed">
-                Choose a preferred date and time block. We will send a calendar link to your email upon form submission.
+                Choose a preferred date and time block. We will confirm the call on WhatsApp or email.
               </p>
               
               <div className="grid grid-cols-2 gap-4">
@@ -218,22 +192,22 @@ export default function Contact() {
                     className="w-full bg-[#050816] border border-white/10 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-[#8B5CF6] transition-colors"
                   >
                     <option value="">Select Time</option>
-                    <option value="10:00 AM - 10:30 AM EST">10:00 AM EST</option>
-                    <option value="01:30 PM - 02:00 PM EST">01:30 PM EST</option>
-                    <option value="04:00 PM - 04:30 PM EST">04:00 PM EST</option>
+                    <option value="10:00 AM - 10:30 AM IST">10:00 AM IST</option>
+                    <option value="01:30 PM - 02:00 PM IST">01:30 PM IST</option>
+                    <option value="04:00 PM - 04:30 PM IST">04:00 PM IST</option>
+                    <option value="07:00 PM - 07:30 PM IST">07:00 PM IST</option>
                   </select>
                 </div>
               </div>
             </div>
 
-            {/* Simulated Server/Routing Map */}
+            {/* Office Location */}
             <div className="rounded-2xl glass-card p-6 border border-white/5 bg-[#111720]/45 flex flex-col gap-3 relative h-[180px] justify-between">
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-[#06B6D4]" />
-                <span className="font-space text-xs font-semibold text-white uppercase tracking-wider">Agency Server Map</span>
+                <span className="font-space text-xs font-semibold text-white uppercase tracking-wider">Office Location</span>
               </div>
               <div className="absolute inset-x-0 bottom-4 h-[100px] flex items-center justify-center opacity-30 select-none">
-                {/* SVG vector wireframe grid representing a futuristic global hub */}
                 <svg className="w-[85%] h-full text-[#06B6D4]" fill="none" viewBox="0 0 200 100">
                   <path d="M20,50 Q60,20 100,50 T180,50" stroke="currentColor" strokeWidth="1" strokeDasharray="3 3" />
                   <path d="M20,50 Q60,80 100,50 T180,50" stroke="currentColor" strokeWidth="1" />
@@ -243,7 +217,7 @@ export default function Contact() {
                 </svg>
               </div>
               <span className="font-mono text-[9px] text-right text-[#06B6D4] mt-auto z-10 uppercase tracking-widest">
-                ACTIVE SERVERS // SILICON VALLEY - SEOUL
+                SECTOR 62, NOIDA — NEW DELHI NCR
               </span>
             </div>
 
@@ -262,7 +236,7 @@ export default function Contact() {
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
-                    placeholder="e.g. John Doe"
+                    placeholder="e.g. Rahul Sharma"
                     className="bg-[#050816] border border-white/10 rounded-xl py-3.5 px-4 text-xs text-white focus:outline-none focus:border-[#06B6D4] transition-colors"
                     required
                   />
@@ -274,7 +248,7 @@ export default function Contact() {
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    placeholder="e.g. john@company.com"
+                    placeholder="e.g. rahul@company.com"
                     className="bg-[#050816] border border-white/10 rounded-xl py-3.5 px-4 text-xs text-white focus:outline-none focus:border-[#06B6D4] transition-colors"
                     required
                   />
@@ -286,7 +260,7 @@ export default function Contact() {
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    placeholder="e.g. +1 (555) 019-2834"
+                    placeholder="e.g. +91 9876543210"
                     className="bg-[#050816] border border-white/10 rounded-xl py-3.5 px-4 text-xs text-white focus:outline-none focus:border-[#06B6D4] transition-colors"
                   />
                 </div>
@@ -303,7 +277,7 @@ export default function Contact() {
                 </div>
               </div>
 
-              {/* Toggles: Project Type and Budget */}
+              {/* Project Type Toggle */}
               <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-2">
                   <label className="font-mono text-[9px] text-[#EDEDED]/55 uppercase tracking-wider">Scope of Work</label>
@@ -324,26 +298,6 @@ export default function Contact() {
                     ))}
                   </div>
                 </div>
-
-                <div className="flex flex-col gap-2">
-                  <label className="font-mono text-[9px] text-[#EDEDED]/55 uppercase tracking-wider">Estimated Budget</label>
-                  <div className="flex flex-wrap gap-2">
-                    {budgets.map((bud) => (
-                      <button
-                        key={bud}
-                        type="button"
-                        onClick={() => setFormData((prev) => ({ ...prev, budget: bud }))}
-                        className={`px-4 py-2 rounded-lg font-space text-[10px] uppercase tracking-wider border cursor-pointer transition-colors ${
-                          formData.budget === bud
-                            ? 'bg-[#8B5CF6]/15 border-[#8B5CF6] text-[#8B5CF6]'
-                            : 'bg-[#050816] border-white/5 text-[#EDEDED]/60 hover:text-white hover:border-white/20'
-                        }`}
-                      >
-                        {bud}
-                      </button>
-                    ))}
-                  </div>
-                </div>
               </div>
 
               {/* Message */}
@@ -354,34 +308,18 @@ export default function Contact() {
                   value={formData.message}
                   onChange={handleInputChange}
                   rows={5}
-                  placeholder="Outline client specifications, model triggers, or features desired..."
+                  placeholder="Describe your project idea, requirements, or anything you'd like to discuss..."
                   className="bg-[#050816] border border-white/10 rounded-xl py-3.5 px-4 text-xs text-white focus:outline-none focus:border-[#06B6D4] transition-colors resize-none"
                   required
                 />
               </div>
 
-              {/* File Attachment Upload */}
-              <div className="flex flex-col gap-2">
-                <label className="font-mono text-[9px] text-[#EDEDED]/55 uppercase tracking-wider">Attachment (PDF, images, specs)</label>
-                <div
-                  onClick={() => fileInputRef.current?.click()}
-                  className="border border-dashed border-white/15 rounded-xl py-6 px-4 flex flex-col items-center justify-center cursor-pointer hover:bg-white/[0.02] hover:border-[#06B6D4]/35 transition-colors text-center"
-                >
-                  <Upload className="w-5 h-5 text-[#06B6D4] mb-2" />
-                  <span className="text-[10px] font-mono text-[#EDEDED]/60">
-                    {file ? `SELECTED: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)}MB)` : 'DRAG & DROP OR CHOOSE FILE'}
-                  </span>
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleFileChange}
-                    className="hidden"
-                    accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-                  />
-                </div>
+              {/* Pricing note */}
+              <div className="p-4 rounded-xl border border-[#8B5CF6]/20 bg-[#8B5CF6]/5 text-[10px] font-mono text-[#EDEDED]/50 tracking-wide leading-relaxed">
+                💬 <span className="text-[#8B5CF6]">No pricing tags here!</span> — After you submit, our team will reach out via WhatsApp or email to understand your scope and share a custom quote personally.
               </div>
 
-              {/* Action Buttons */}
+              {/* Action Button */}
               <button
                 type="submit"
                 disabled={status === 'submitting'}
