@@ -11,8 +11,6 @@ const contactChannels = [
     description: 'Speak directly with our team',
     links: [
       { href: 'tel:+919508725672', display: '+91 9508725672' },
-      { href: 'tel:+918210686793', display: '+91 8210686793' },
-      { href: 'tel:+917079673468', display: '+91 7079673468' },
     ],
     color: '#06B6D4',
     bg: 'bg-[#06B6D4]/10',
@@ -23,8 +21,6 @@ const contactChannels = [
     description: 'Chat with us on WhatsApp for quick replies',
     links: [
       { href: 'https://wa.me/919508725672', display: '+91 9508725672' },
-      { href: 'https://wa.me/918210686793', display: '+91 8210686793' },
-      { href: 'https://wa.me/917079673468', display: '+91 7079673468' },
     ],
     color: '#22C55E',
     bg: 'bg-green-500/10',

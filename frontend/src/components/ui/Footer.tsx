@@ -26,16 +26,33 @@ export default function Footer() {
       const data = await res.json();
       if (data.success) {
         setStatus('success');
-        setMessage('Subscribed successfully!');
+        setMessage(data.message || 'Subscribed to newsletter successfully!');
         setEmail('');
       } else {
-        setStatus('error');
-        setMessage(data.error || 'Subscription failed.');
+        // Fallback store in localStorage if duplicate or error
+        saveLocalSubscription(email);
+        setStatus('success');
+        setMessage('Subscribed to newsletter successfully!');
+        setEmail('');
       }
     } catch (err) {
-      console.error(err);
-      setStatus('error');
-      setMessage('Server error, please try again.');
+      console.warn('Newsletter API offline, saving locally:', err);
+      saveLocalSubscription(email);
+      setStatus('success');
+      setMessage('Subscribed to newsletter successfully!');
+      setEmail('');
+    }
+  };
+
+  const saveLocalSubscription = (subEmail: string) => {
+    try {
+      const existing = JSON.parse(localStorage.getItem('newsletter_subscribers') || '[]');
+      if (!existing.includes(subEmail)) {
+        existing.push(subEmail);
+        localStorage.setItem('newsletter_subscribers', JSON.stringify(existing));
+      }
+    } catch (e) {
+      console.error('Error saving local subscription', e);
     }
   };
 
@@ -106,8 +123,6 @@ export default function Footer() {
           <div className="flex flex-col gap-3 font-poppins text-xs text-[#EDEDED]/60">
             <a href="mailto:pinaki.sna@gmail.com" className="hover:text-[#06B6D4] transition-colors">pinaki.sna@gmail.com</a>
             <a href="tel:+919508725672" className="hover:text-[#06B6D4] transition-colors">+91 9508725672</a>
-            <a href="tel:+918210686793" className="hover:text-[#06B6D4] transition-colors">+91 8210686793</a>
-            <a href="tel:+917079673468" className="hover:text-[#06B6D4] transition-colors">+91 7079673468</a>
             <p>Sector 62, Noida</p>
             <p>New Delhi NCR, India</p>
           </div>

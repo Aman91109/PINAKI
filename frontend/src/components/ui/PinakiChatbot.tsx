@@ -146,12 +146,12 @@ const KNOWLEDGE_BASE: { keywords: string[]; response: string; priority: number }
   // ═══════════════════════════════════════════
   {
     keywords: ['price', 'pricing', 'cost', 'how much', 'budget', 'rate', 'charge', 'fee', 'expensive', 'affordable', 'cheap', 'quote', 'estimate', 'money'],
-    response: "💬 **We don't have fixed price tags!**\n\nEvery project is unique, and we believe in transparent, personalised pricing. Our team will understand your exact requirements and share a custom quote — no hidden costs, no surprises.\n\n📞 **Call / WhatsApp us directly:**\n• +91 9508725672\n• +91 8210686793\n• +91 7079673468\n\n📧 **Email:** pinaki.sna@gmail.com\n\nJust reach out and we'll get back to you within a few hours! 🚀",
+    response: "💬 **We don't have fixed price tags!**\n\nEvery project is unique, and we believe in transparent, personalised pricing. Our team will understand your exact requirements and share a custom quote — no hidden costs, no surprises.\n\n📞 **Call / WhatsApp us directly:**\n• +91 9508725672\n\n📧 **Email:** pinaki.sna@gmail.com\n\nJust reach out and we'll get back to you within a few hours! 🚀",
     priority: 5,
   },
   {
     keywords: ['starter plan', 'starter', 'basic plan', 'professional plan', 'pro plan', 'enterprise plan', 'enterprise', 'custom plan', 'large project', 'big project'],
-    response: "🎯 **Custom Packages for Every Need:**\n\nWhether you're a student, startup, or an established business — we tailor our scope and pricing specifically for you.\n\n📞 **Talk to us directly:**\n• Call / WhatsApp: +91 9508725672\n• Call / WhatsApp: +91 8210686793\n• Call / WhatsApp: +91 7079673468\n• Email: pinaki.sna@gmail.com\n\nWe'll listen to your vision and craft the perfect plan! ✨",
+    response: "🎯 **Custom Packages for Every Need:**\n\nWhether you're a student, startup, or an established business — we tailor our scope and pricing specifically for you.\n\n📞 **Talk to us directly:**\n• Call / WhatsApp: +91 9508725672\n• Email: pinaki.sna@gmail.com\n\nWe'll listen to your vision and craft the perfect plan! ✨",
     priority: 5,
   },
 
@@ -199,8 +199,7 @@ const KNOWLEDGE_BASE: { keywords: string[]; response: string; priority: number }
   },
   {
     keywords: ['address', 'location', 'where', 'office', 'based', 'headquarter'],
-    response: "📍 **Our Location:**\nSector 62, Noida\nNew Delhi NCR, India\n\nFor inquiries, reach us at:\n📞 Call / WhatsApp: +91 9508725672 | +91 8210686793 | +91 7079673468\n📧 Email: pinaki.sna@gmail.com",
-
+    response: "📍 **Our Location:**\nSector 62, Noida\nNew Delhi NCR, India\n\nFor inquiries, reach us at:\n📞 Call / WhatsApp: +91 9508725672\n📧 Email: pinaki.sna@gmail.com",
     priority: 3,
   },
 
@@ -381,7 +380,7 @@ function findBestResponse(input: string): string {
   }
 
   // Fallback response
-  return "I appreciate your question! 🤔 While I might not have the exact answer to that, I can help you with information about our **services**, **team**, **process**, **portfolio**, and **contact details**.\n\nFor specific inquiries or to discuss your project, reach us directly:\n📞 **Call / WhatsApp:** +91 9508725672 | +91 8210686793 | +91 7079673468\n📧 **Email:** pinaki.sna@gmail.com\n\nWe respond within a few hours! Try asking me about:\n• What services do you offer?\n• Tell me about the team\n• How does your process work?\n• How do I contact you?";
+  return "I appreciate your question! 🤔 While I might not have the exact answer to that, I can help you with information about our **services**, **team**, **process**, **portfolio**, and **contact details**.\n\nFor specific inquiries or to discuss your project, reach us directly:\n📞 **Call / WhatsApp:** +91 9508725672\n📧 **Email:** pinaki.sna@gmail.com\n\nWe respond within a few hours! Try asking me about:\n• What services do you offer?\n• Tell me about the team\n• How does your process work?\n• How do I contact you?";
 }
 
 // ── Format message text with basic markdown ──

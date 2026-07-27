@@ -14,6 +14,7 @@ const navItems = [
   { name: 'Process', href: '#process' },
   { name: 'FAQ', href: '#faq' },
   { name: 'Blog', href: '#blog' },
+  { name: 'Map', href: '#map' },
 ];
 
 export default function Navbar() {
