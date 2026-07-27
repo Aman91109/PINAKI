@@ -54,7 +54,7 @@ export default function TiltCard({ children, className = "" }: TiltCardProps) {
       {/* Interactive Neon Spotlight Overlay */}
       <div
         style={{
-          background: `radial-gradient(circle 150px at ${glow.x}% ${glow.y}%, rgba(6, 182, 212, 0.4), transparent)`,
+          backgroundColor: 'rgba(6, 182, 212, 0.08)',
           opacity: glow.opacity,
           transition: 'opacity 0.3s ease',
         }}

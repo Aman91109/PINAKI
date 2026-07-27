@@ -95,7 +95,7 @@ export default function Hero() {
           className="text-4xl sm:text-6xl md:text-8xl font-bold font-space text-white tracking-tighter leading-[0.95] max-w-4xl"
         >
           We Build Digital
-          <span className="block text-gradient">Experiences</span>
+          <span className="block text-[#06B6D4]">Experiences</span>
           That Grow Businesses.
         </motion.h1>
 

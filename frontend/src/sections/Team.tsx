@@ -105,8 +105,8 @@ export default function Team() {
                       sizes="(max-w-720px) 100vw, 30vw"
                       className="object-cover transition-transform duration-700 group-hover:scale-110"
                     />
-                    {/* Dark gradient fade on image bottom */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#050816] via-transparent to-transparent opacity-60" />
+                    {/* Solid dark overlay on image bottom */}
+                    <div className="absolute inset-0 bg-[#050816]/40" />
 
                     {/* Hover detail slide-up */}
                     <div className="absolute bottom-4 left-4 right-4 z-20 flex gap-2 justify-between items-center bg-[#0B1120]/80 backdrop-blur-md border border-white/10 p-3 rounded-lg opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
@@ -151,7 +151,7 @@ export default function Team() {
                             whileInView={{ width: `${skill.level}%` }}
                             viewport={{ once: true }}
                             transition={{ duration: 1, ease: 'easeOut', delay: 0.2 }}
-                            className="h-full bg-gradient-to-r from-blue-500 to-purple-500"
+                            className="h-full bg-[#8B5CF6]"
                           />
                         </div>
                       </div>

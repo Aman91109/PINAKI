@@ -435,7 +435,7 @@ function VoiceTab() {
         {[...Array(20)].map((_, i) => (
           <motion.div
             key={i}
-            className="w-[3px] rounded-full bg-gradient-to-t from-[#06B6D4] to-[#8B5CF6]"
+            className="w-[3px] rounded-full bg-[#06B6D4]"
             animate={{
               height: [
                 `${6 + Math.random() * 14}px`,
@@ -573,9 +573,9 @@ export default function PinakiChatbot() {
             className="w-[360px] sm:w-[400px] h-[540px] rounded-2xl border border-white/10 bg-[#0B1120]/98 backdrop-blur-2xl flex flex-col overflow-hidden shadow-[0_0_50px_rgba(139,92,246,0.12)]"
           >
             {/* Header */}
-            <div className="bg-gradient-to-r from-[#111720] to-[#0B1120] border-b border-white/5 px-5 py-3.5 flex items-center justify-between shrink-0">
+            <div className="bg-[#111720] border-b border-white/5 px-5 py-3.5 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#8B5CF6] to-[#06B6D4] flex items-center justify-center shadow-[0_0_15px_rgba(139,92,246,0.3)]">
+                <div className="w-9 h-9 rounded-xl bg-[#8B5CF6] flex items-center justify-center shadow-[0_0_15px_rgba(139,92,246,0.3)]">
                   <Bot className="w-5 h-5 text-white" />
                 </div>
                 <div>
@@ -612,7 +612,7 @@ export default function PinakiChatbot() {
                 {activeTab === 'chat' && (
                   <motion.div
                     layoutId="activeTabIndicator"
-                    className="absolute bottom-0 left-2 right-2 h-[2px] bg-gradient-to-r from-[#8B5CF6] to-[#06B6D4] rounded-full"
+                    className="absolute bottom-0 left-2 right-2 h-[2px] bg-[#06B6D4] rounded-full"
                   />
                 )}
               </button>
@@ -629,7 +629,7 @@ export default function PinakiChatbot() {
                 {activeTab === 'voice' && (
                   <motion.div
                     layoutId="activeTabIndicator"
-                    className="absolute bottom-0 left-2 right-2 h-[2px] bg-gradient-to-r from-[#06B6D4] to-[#8B5CF6] rounded-full"
+                    className="absolute bottom-0 left-2 right-2 h-[2px] bg-[#8B5CF6] rounded-full"
                   />
                 )}
               </button>
@@ -660,8 +660,8 @@ export default function PinakiChatbot() {
                         <div
                           className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${
                             msg.sender === 'bot'
-                              ? 'bg-gradient-to-br from-[#8B5CF6]/20 to-[#06B6D4]/20 border border-[#8B5CF6]/20'
-                              : 'bg-[#8B5CF6]/15 border border-[#8B5CF6]/20'
+                              ? 'bg-[#8B5CF6]/20 border border-[#8B5CF6]/30'
+                              : 'bg-[#06B6D4]/20 border border-[#06B6D4]/30'
                           }`}
                         >
                           {msg.sender === 'bot' ? (
@@ -675,7 +675,7 @@ export default function PinakiChatbot() {
                         <div
                           className={`max-w-[80%] px-3.5 py-2.5 rounded-2xl text-[11.5px] leading-[1.65] font-poppins ${
                             msg.sender === 'user'
-                              ? 'bg-gradient-to-r from-[#8B5CF6]/25 to-[#8B5CF6]/15 border border-[#8B5CF6]/25 text-white rounded-tr-md'
+                              ? 'bg-[#8B5CF6]/30 border border-[#8B5CF6]/30 text-white rounded-tr-md'
                               : 'bg-white/[0.04] border border-white/[0.06] text-[#EDEDED]/85 rounded-tl-md'
                           }`}
                         >
@@ -691,7 +691,7 @@ export default function PinakiChatbot() {
                         animate={{ opacity: 1 }}
                         className="flex gap-2 items-center"
                       >
-                        <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#8B5CF6]/20 to-[#06B6D4]/20 border border-[#8B5CF6]/20 flex items-center justify-center">
+                        <div className="w-7 h-7 rounded-lg bg-[#8B5CF6]/20 border border-[#8B5CF6]/30 flex items-center justify-center">
                           <Bot className="w-3.5 h-3.5 text-[#06B6D4]" />
                         </div>
                         <div className="bg-white/[0.04] border border-white/[0.06] rounded-2xl rounded-tl-md px-4 py-3 flex items-center gap-1">
@@ -733,7 +733,7 @@ export default function PinakiChatbot() {
                     <button
                       type="submit"
                       disabled={!inputVal.trim()}
-                      className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#8B5CF6] to-[#06B6D4] text-white flex items-center justify-center hover:shadow-[0_0_15px_rgba(139,92,246,0.3)] hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+                      className="w-10 h-10 rounded-xl bg-[#8B5CF6] text-white flex items-center justify-center hover:bg-[#7C3AED] hover:shadow-[0_0_15px_rgba(139,92,246,0.3)] hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
                     >
                       <Send className="w-4 h-4" />
                     </button>
@@ -761,7 +761,7 @@ export default function PinakiChatbot() {
         onClick={() => setChatOpen(!chatOpen)}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="w-14 h-14 rounded-full bg-gradient-to-r from-[#8B5CF6] to-[#06B6D4] flex items-center justify-center text-white shadow-[0_0_25px_rgba(139,92,246,0.3)] cursor-pointer relative group"
+        className="w-14 h-14 rounded-full bg-[#8B5CF6] hover:bg-[#7C3AED] flex items-center justify-center text-white shadow-[0_0_25px_rgba(139,92,246,0.35)] cursor-pointer relative group"
       >
         <AnimatePresence mode="wait">
           {chatOpen ? (

@@ -48,7 +48,7 @@ export default function Navbar() {
     <>
       {/* 1. Scroll Progress Bar */}
       <motion.div
-        className="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 origin-[0%] z-[999]"
+        className="fixed top-0 left-0 right-0 h-[3px] bg-[#06B6D4] origin-[0%] z-[999]"
         style={{ scaleX: scrollYProgress }}
       />
 

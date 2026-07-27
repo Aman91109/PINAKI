@@ -77,15 +77,15 @@ export default function Preloader({ onComplete }: PreloaderProps) {
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.5 }}
-              className="text-8xl md:text-[12rem] font-bold font-space text-transparent bg-clip-text bg-gradient-to-b from-white to-[#1F2937] tracking-tighter"
+              className="text-8xl md:text-[12rem] font-bold font-space text-white tracking-tighter"
             >
               {progress.toString().padStart(3, '0')}
             </motion.h1>
 
-            {/* Glowing Linear Progress Bar */}
+            {/* Solid Progress Bar */}
             <div className="w-full max-w-lg h-[2px] bg-[#1E293B] relative overflow-hidden rounded-full mt-4">
               <motion.div
-                className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-400 shadow-[0_0_8px_#8B5CF6]"
+                className="absolute top-0 left-0 h-full bg-[#06B6D4] shadow-[0_0_8px_#06B6D4]"
                 style={{ width: `${progress}%` }}
               />
             </div>

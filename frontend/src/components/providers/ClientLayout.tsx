@@ -38,9 +38,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
         <ThreeBackground />
       </div>
 
-      {/* Global Aesthetics Overlay: Cyber Grid + Noise */}
-      <div className="fixed inset-0 -z-40 pointer-events-none opacity-[0.03] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[size:100%_4px,3px_100%]" />
-      <div className="fixed inset-0 -z-40 pointer-events-none opacity-[0.15] bg-[radial-gradient(ellipse_at_center,rgba(59,130,246,0.15),transparent_70%)]" />
+      <div className="fixed inset-0 -z-40 pointer-events-none opacity-[0.03] bg-[#8B5CF6]/5" />
 
       {/* Mouse Spotlights/Followers */}
       <CustomCursor />
