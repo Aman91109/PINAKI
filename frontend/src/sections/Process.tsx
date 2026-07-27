@@ -1,149 +1,126 @@
 'use client';
 
-import React from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle2, MessageSquare, Cpu, Palette, Code2, ShieldAlert, Cloud, HelpCircle } from 'lucide-react';
+import { MessageSquare, Cpu, Palette, Code2, ShieldAlert, Cloud, HelpCircle } from 'lucide-react';
+import { Card, Section, SectionHeading } from '@/components/ui/primitives';
 
 const processSteps = [
   {
     step: '01',
     name: 'Requirement Discussion',
     icon: MessageSquare,
-    description: 'We hold exhaustive consultation sessions to examine your goals, establish scopes, define project deadlines, and formulate the budget tier.',
+    description:
+      'We hold exhaustive consultation sessions to examine your goals, establish scopes, define project deadlines, and formulate the budget tier.',
     lead: 'Elena Rostova (Creative Director)',
-    color: '#06B6D4'
   },
   {
     step: '02',
     name: 'Planning & Architecture',
     icon: Cpu,
-    description: 'Aiden structures database tables (Mongoose collections), outlines REST controllers, and plans AI/ML models to guarantee clean layouts.',
+    description:
+      'Aiden structures database tables (Mongoose collections), outlines REST controllers, and plans AI/ML models to guarantee clean layouts.',
     lead: 'Aiden Vance (Systems Architect)',
-    color: '#3B82F6'
   },
   {
     step: '03',
     name: 'UI/UX Visual Design',
     icon: Palette,
-    description: 'Elena builds interactive prototypes in Figma, mapping user flows and creating glassmorphic dark-theme layouts that command premium authority.',
+    description:
+      'Elena builds interactive prototypes in Figma, mapping user flows and creating dark-theme layouts that command premium authority.',
     lead: 'Elena Rostova (Creative Director)',
-    color: '#8B5CF6'
   },
   {
     step: '04',
     name: 'Code Development',
     icon: Code2,
-    description: 'Zephyr compiles the responsive Next.js 15 frontend with Framer Motion, and Aiden builds the Node/Express backend endpoints with JWT.',
+    description:
+      'Zephyr compiles the responsive Next.js 15 frontend with Framer Motion, and Aiden builds the Node/Express backend endpoints with JWT.',
     lead: 'Zephyr Croft (Lead Developer)',
-    color: '#EC4899'
   },
   {
     step: '05',
     name: 'Rigorous Testing',
     icon: ShieldAlert,
-    description: 'We run security checks on auth middlewares, debug files upload pipelines, audit API query speeds, and compile TS build checks.',
+    description:
+      'We run security checks on auth middlewares, debug files upload pipelines, audit API query speeds, and compile TS build checks.',
     lead: 'Zephyr & Aiden (Engineering)',
-    color: '#F59E0B'
   },
   {
     step: '06',
     name: 'Deployment & Launch',
     icon: Cloud,
-    description: 'Your frontend is deployed to Vercel, the Express server is hosted on Render, and MongoDB databases are mapped on Atlas CDN configurations.',
+    description:
+      'Your frontend is deployed to Vercel, the Express server is hosted on Render, and MongoDB databases are mapped on Atlas CDN configurations.',
     lead: 'Aiden Vance (Systems Architect)',
-    color: '#10B981'
   },
   {
     step: '07',
     name: 'Dedicated Support',
     icon: HelpCircle,
-    description: 'Pinaki provides round-the-clock maintenance agreements, dependency updates, weekly database backups, and feature enhancements.',
+    description:
+      'Pinaki provides round-the-clock maintenance agreements, dependency updates, weekly database backups, and feature enhancements.',
     lead: 'Pinaki Support Engineers',
-    color: '#6366F1'
-  }
+  },
 ];
 
 export default function Process() {
   return (
-    <section id="process" className="py-24 px-6 bg-[#050816] relative overflow-hidden">
-      {/* Aurora spotlight */}
-      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[#8B5CF6]/5 blur-[150px] pointer-events-none" />
+    <Section id="process" tone="raised" width="lg">
+      <SectionHeading
+        eyebrow="Methodology"
+        title="How We Translate Ideas To Production"
+        align="center"
+      />
 
-      <div className="max-w-5xl mx-auto">
-        
-        {/* Section title */}
-        <div className="flex flex-col mb-20 text-center items-center">
-          <span className="text-xs font-mono tracking-widest text-[#06B6D4] uppercase mb-2">// METHODOLOGY</span>
-          <h2 className="text-3xl md:text-5xl font-bold font-space text-white tracking-tight">
-            How We Translate Ideas To Production
-          </h2>
-        </div>
-
-        {/* Timeline Path */}
-        <div className="relative border-l border-white/10 ml-4 md:ml-32 pl-8 md:pl-16 flex flex-col gap-16">
-          
-          {processSteps.map((proc, idx) => {
-            const IconComp = proc.icon;
-            return (
-              <motion.div
-                key={proc.step}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: '-50px' }}
-                transition={{ duration: 0.6, delay: idx * 0.1 }}
-                className="relative flex flex-col items-start"
+      {/* Timeline rail */}
+      <ol className="relative ml-3 flex flex-col gap-8 border-l border-line pl-8 md:ml-6 md:pl-12">
+        {processSteps.map((proc, idx) => {
+          const IconComp = proc.icon;
+          return (
+            <motion.li
+              key={proc.step}
+              initial={{ opacity: 0, x: -16 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{ duration: 0.5, delay: idx * 0.06 }}
+              className="relative"
+            >
+              {/* Node on the rail */}
+              <span
+                aria-hidden
+                className="absolute -left-[41px] top-6 flex h-[26px] w-[26px] items-center justify-center rounded-full border-4 border-canvas-raised bg-accent font-mono text-[9px] font-bold text-accent-ink md:-left-[61px] md:h-8 md:w-8 md:text-[10px]"
               >
-                {/* Step Circle Pin on the line */}
-                <div
-                  style={{ backgroundColor: proc.color }}
-                  className="absolute -left-[41px] md:-left-[73px] top-1.5 w-6 h-6 md:w-8 md:h-8 rounded-full border-4 border-[#050816] flex items-center justify-center shadow-[0_0_15px_rgba(255,255,255,0.1)] z-10"
-                >
-                  <CheckCircle2 className="w-3.5 h-3.5 md:w-4 md:h-4 text-white" />
-                </div>
+                {proc.step}
+              </span>
 
-                {/* Floating Step Number Label (Desktop only) */}
-                <div className="absolute -left-[140px] md:-left-[200px] top-0 hidden md:flex flex-col text-right w-24">
-                  <span className="font-space text-3xl font-extrabold text-white/10 tracking-wider">
-                    {proc.step}
-                  </span>
-                  <span className="font-mono text-[9px] text-[#EDEDED]/40 uppercase tracking-widest mt-1">
-                    Phase {proc.step}
-                  </span>
-                </div>
-
-                {/* Content Card */}
-                <div className="w-full rounded-2xl glass-card p-6 md:p-8 bg-[#111720]/45 border border-white/5 relative">
-                  {/* Decorative corner tag */}
-                  <div
-                    style={{ backgroundColor: `${proc.color}15`, color: proc.color, borderColor: `${proc.color}25` }}
-                    className="absolute top-6 right-6 inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[10px] font-mono uppercase tracking-widest"
-                  >
-                    <IconComp className="w-3.5 h-3.5" />
-                    Step {proc.step}
+              <Card padding="lg">
+                <div className="mb-4 flex items-start justify-between gap-4">
+                  <div>
+                    <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink-subtle">
+                      Step {proc.step}
+                    </span>
+                    <h3 className="mt-1 font-space text-lg font-bold text-ink md:text-xl">
+                      {proc.name}
+                    </h3>
                   </div>
-
-                  <h3 className="font-space text-lg md:text-xl font-bold text-white mb-3">
-                    {proc.name}
-                  </h3>
-
-                  <p className="font-poppins text-xs md:text-sm text-[#EDEDED]/60 leading-relaxed mb-4 max-w-2xl">
-                    {proc.description}
-                  </p>
-
-                  {/* Leader Node */}
-                  <div className="flex items-center gap-2 text-[10px] md:text-xs font-mono text-[#06B6D4] bg-[#06B6D4]/5 px-3 py-1.5 rounded-lg w-max border border-[#06B6D4]/15">
-                    <span className="text-[#EDEDED]/40">PHASE LEAD:</span>
-                    {proc.lead}
-                  </div>
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-accent-line bg-accent-soft text-accent">
+                    <IconComp className="h-4 w-4" />
+                  </span>
                 </div>
 
-              </motion.div>
-            );
-          })}
+                <p className="mb-5 max-w-2xl font-poppins text-xs leading-relaxed text-ink-muted md:text-sm">
+                  {proc.description}
+                </p>
 
-        </div>
-
-      </div>
-    </section>
+                <p className="flex w-max max-w-full flex-wrap items-center gap-2 rounded-lg border border-line bg-surface-inset px-3 py-2 font-mono text-[10px] md:text-xs">
+                  <span className="text-ink-subtle">Phase lead:</span>
+                  <span className="text-accent">{proc.lead}</span>
+                </p>
+              </Card>
+            </motion.li>
+          );
+        })}
+      </ol>
+    </Section>
   );
 }

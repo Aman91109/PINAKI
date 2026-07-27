@@ -51,7 +51,7 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${spaceGrotesk.variable} ${poppins.variable} dark scroll-smooth`}
     >
-      <body className="bg-[#050816] text-[#EDEDED] font-sans antialiased overflow-x-hidden">
+      <body className="overflow-x-hidden bg-canvas font-sans text-ink antialiased">
         <ClientLayout>
           {children}
         </ClientLayout>

@@ -26,11 +26,13 @@ function Particles({ count = 2500 }) {
   const [positions, colors] = useMemo(() => {
     const pos = new Float32Array(count * 3);
     const cols = new Float32Array(count * 3);
+    // Mostly neutral with a minority of accent points, so the field reads as
+    // texture rather than as a second colour story competing with the UI.
     const colorPalette = [
-      new THREE.Color('#8B5CF6'), // Purple
-      new THREE.Color('#3B82F6'), // Blue
-      new THREE.Color('#06B6D4'), // Cyan
-      new THREE.Color('#050816'), // Dark bg blend
+      new THREE.Color('#22d3ee'), // accent
+      new THREE.Color('#2e3542'), // line-strong
+      new THREE.Color('#2e3542'),
+      new THREE.Color('#1e2330'), // line
     ];
 
     for (let i = 0; i < count; i++) {
@@ -114,16 +116,16 @@ function OrbitalRings() {
 
   return (
     <group>
-      {/* Ring 1 - Cyan accent */}
+      {/* Ring 1 — accent */}
       <mesh ref={ringRef1} rotation={[Math.PI / 4, Math.PI / 6, 0]}>
         <ringGeometry args={[12, 12.1, 64]} />
-        <meshBasicMaterial color="#06B6D4" transparent opacity={0.12} side={THREE.DoubleSide} />
+        <meshBasicMaterial color="#22d3ee" transparent opacity={0.1} side={THREE.DoubleSide} />
       </mesh>
-      
-      {/* Ring 2 - Purple accent */}
+
+      {/* Ring 2 — neutral */}
       <mesh ref={ringRef2} rotation={[Math.PI / 3, -Math.PI / 4, 0]}>
         <ringGeometry args={[16, 16.15, 64]} />
-        <meshBasicMaterial color="#8B5CF6" transparent opacity={0.08} side={THREE.DoubleSide} />
+        <meshBasicMaterial color="#7a8393" transparent opacity={0.07} side={THREE.DoubleSide} />
       </mesh>
     </group>
   );

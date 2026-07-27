@@ -1,11 +1,20 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Minus, HelpCircle } from 'lucide-react';
+import { Plus, Minus } from 'lucide-react';
+import { Section, SectionHeading } from '@/components/ui/primitives';
+import { cn } from '@/lib/cn';
 import { API_BASE_URL } from '@/config';
 
-const fallbackFAQs = [
+interface FaqItem {
+  _id: string;
+  question: string;
+  answer: string;
+  order: number;
+}
+
+const fallbackFAQs: FaqItem[] = [
   { _id: 'f1', question: 'How long does a typical full-stack project take?', answer: 'Simple Next.js landing portfolios or corporate websites take 2-4 weeks. Complex full-stack applications with database panels take 6-12 weeks.', order: 1 },
   { _id: 'f2', question: 'Do you design in Figma before coding?', answer: 'Yes! Elena Rostova, our Creative Director, maps user flows, wireframes, and complete high-fidelity desktop and mobile layouts in Figma.', order: 2 },
   { _id: 'f3', question: 'Can we edit the website content after launch?', answer: 'Absolutely. We deliver a custom-tailored Admin Dashboard CMS where you can manage portfolio projects, blogs, team profiles, and FAQs.', order: 3 },
@@ -14,8 +23,8 @@ const fallbackFAQs = [
 ];
 
 export default function FAQ() {
-  const [faqs, setFaqs] = useState(fallbackFAQs);
-  const [openIndex, setOpenIndex] = useState<string | null>(null);
+  const [faqs, setFaqs] = useState<FaqItem[]>(fallbackFAQs);
+  const [openId, setOpenId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchFAQs = async () => {
@@ -23,85 +32,74 @@ export default function FAQ() {
         const res = await fetch(`${API_BASE_URL}/api/public/faqs`);
         const data = await res.json();
         if (data.success && data.data && data.data.length > 0) {
-          // Sort by order parameter
-          const sorted = data.data.sort((a: any, b: any) => a.order - b.order);
+          const sorted = [...data.data].sort((a: FaqItem, b: FaqItem) => a.order - b.order);
           setFaqs(sorted);
         }
-      } catch (err) {
+      } catch {
         console.warn('Could not connect to FAQ API. Using local fallbacks.');
       }
     };
     fetchFAQs();
   }, []);
 
-  const toggleFAQ = (id: string) => {
-    if (openIndex === id) {
-      setOpenIndex(null);
-    } else {
-      setOpenIndex(id);
-    }
-  };
-
   return (
-    <section id="faq" className="py-24 px-6 bg-[#050816] relative overflow-hidden">
-      {/* Glow spot */}
-      <div className="absolute bottom-[10%] right-[10%] w-[350px] h-[350px] rounded-full bg-[#8B5CF6]/5 blur-[120px] pointer-events-none" />
+    <Section id="faq" tone="canvas" width="md">
+      <SectionHeading eyebrow="Questions" title="Frequently Asked Queries" align="center" />
 
-      <div className="max-w-4xl mx-auto">
-        {/* Section title */}
-        <div className="flex flex-col mb-16 text-center items-center">
-          <span className="text-xs font-mono tracking-widest text-[#06B6D4] uppercase mb-2">// FAQ ACCORDION</span>
-          <h2 className="text-3xl md:text-5xl font-bold font-space text-white tracking-tight">
-            Frequently Asked Queries
-          </h2>
-        </div>
-
-        {/* Accordion list */}
-        <div className="flex flex-col gap-4">
-          {faqs.map((faq) => {
-            const isOpen = openIndex === faq._id;
-            return (
-              <div
-                key={faq._id}
-                className="rounded-2xl border border-white/5 bg-[#111720]/45 overflow-hidden transition-all duration-300"
-              >
-                {/* Header/Question Trigger */}
+      {/* Single bordered stack rather than 5 detached cards — reads as one control. */}
+      <div className="divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface">
+        {faqs.map((faq) => {
+          const isOpen = openId === faq._id;
+          const panelId = `faq-panel-${faq._id}`;
+          return (
+            <div key={faq._id}>
+              <h3>
                 <button
-                  onClick={() => toggleFAQ(faq._id)}
-                  className="w-full flex items-center justify-between p-6 text-left cursor-pointer hover:bg-white/[0.02] transition-colors"
-                >
-                  <div className="flex items-center gap-4 pr-4">
-                    <HelpCircle className="w-5 h-5 text-[#06B6D4] shrink-0" />
-                    <span className="font-space text-sm md:text-base font-bold text-white tracking-wide">
-                      {faq.question}
-                    </span>
-                  </div>
-                  <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-[#EDEDED]/60 shrink-0">
-                    {isOpen ? <Minus className="w-4 h-4 text-[#8B5CF6]" /> : <Plus className="w-4 h-4" />}
-                  </div>
-                </button>
-
-                {/* Animated expandable content */}
-                <AnimatePresence initial={false}>
-                  {isOpen && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.35, ease: 'easeInOut' }}
-                    >
-                      <div className="p-6 pt-0 border-t border-white/5 font-poppins text-xs md:text-sm text-[#EDEDED]/60 leading-relaxed pl-15">
-                        {faq.answer}
-                      </div>
-                    </motion.div>
+                  onClick={() => setOpenId(isOpen ? null : faq._id)}
+                  aria-expanded={isOpen}
+                  aria-controls={panelId}
+                  className={cn(
+                    'flex w-full cursor-pointer items-center justify-between gap-4 p-5 text-left transition-colors',
+                    isOpen ? 'bg-surface-hover' : 'hover:bg-surface-hover'
                   )}
-                </AnimatePresence>
-              </div>
-            );
-          })}
-        </div>
+                >
+                  <span className="font-space text-sm font-bold tracking-wide text-ink md:text-base">
+                    {faq.question}
+                  </span>
+                  <span
+                    aria-hidden
+                    className={cn(
+                      'flex h-7 w-7 shrink-0 items-center justify-center rounded-md border transition-colors',
+                      isOpen
+                        ? 'border-accent bg-accent text-accent-ink'
+                        : 'border-line text-ink-subtle'
+                    )}
+                  >
+                    {isOpen ? <Minus className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
+                  </span>
+                </button>
+              </h3>
 
+              <AnimatePresence initial={false}>
+                {isOpen && (
+                  <motion.div
+                    id={panelId}
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3, ease: 'easeInOut' }}
+                    className="overflow-hidden bg-surface-hover"
+                  >
+                    <p className="px-5 pb-5 font-poppins text-xs leading-relaxed text-ink-muted md:text-sm">
+                      {faq.answer}
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          );
+        })}
       </div>
-    </section>
+    </Section>
   );
 }

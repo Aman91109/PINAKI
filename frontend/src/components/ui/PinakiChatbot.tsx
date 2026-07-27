@@ -393,7 +393,7 @@ function formatMessage(text: string): React.ReactNode {
     const parts = line.split(/(\*\*[^*]+\*\*)/g);
     const formatted = parts.map((part, j) => {
       if (part.startsWith('**') && part.endsWith('**')) {
-        return <strong key={j} className="text-white font-semibold">{part.slice(2, -2)}</strong>;
+        return <strong key={j} className="font-semibold text-ink">{part.slice(2, -2)}</strong>;
       }
       return part;
     });
@@ -435,7 +435,7 @@ function VoiceTab() {
         {[...Array(20)].map((_, i) => (
           <motion.div
             key={i}
-            className="w-[3px] rounded-full bg-[#06B6D4]"
+            className="w-[3px] rounded-full bg-accent"
             animate={{
               height: [
                 `${6 + Math.random() * 14}px`,
@@ -454,11 +454,12 @@ function VoiceTab() {
       </div>
 
       {/* Info Text */}
-      <div className="text-center space-y-2 max-w-[280px]">
-        <p className="text-xs text-white/70 font-poppins leading-relaxed">
-          Speak with <span className="text-[#06B6D4] font-semibold">Pinaki Voice AI</span> to learn about our services, team, and how to get started.
+      <div className="max-w-[280px] space-y-2 text-center">
+        <p className="font-poppins text-xs leading-relaxed text-ink-muted">
+          Speak with <span className="font-semibold text-accent">Pinaki Voice AI</span> to learn
+          about our services, team, and how to get started.
         </p>
-        <p className="text-[10px] text-white/30 font-mono tracking-wide uppercase">
+        <p className="font-mono text-[10px] uppercase tracking-wide text-ink-subtle">
           Click the microphone below to start
         </p>
       </div>
@@ -472,9 +473,9 @@ function VoiceTab() {
             }}
           />
         ) : (
-          <div className="flex items-center gap-2 text-white/30 text-xs font-mono">
+          <div className="flex items-center gap-2 font-mono text-xs text-ink-subtle">
             <motion.div
-              className="w-4 h-4 border-2 border-[#06B6D4]/40 border-t-[#06B6D4] rounded-full"
+              className="h-4 w-4 rounded-full border-2 border-line-strong border-t-accent"
               animate={{ rotate: 360 }}
               transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
             />
@@ -484,9 +485,9 @@ function VoiceTab() {
       </div>
 
       {/* Security Badge */}
-      <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.05]">
-        <div className="w-1.5 h-1.5 rounded-full bg-green-400/70" />
-        <span className="text-[9px] font-mono text-white/25 tracking-wider uppercase">
+      <div className="flex items-center gap-2 rounded-lg border border-line bg-surface-inset px-3 py-1.5">
+        <span className="h-1.5 w-1.5 rounded-full bg-positive" />
+        <span className="font-mono text-[9px] uppercase tracking-wider text-ink-subtle">
           Powered by ElevenLabs • Encrypted
         </span>
       </div>
@@ -570,69 +571,59 @@ export default function PinakiChatbot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="w-[360px] sm:w-[400px] h-[540px] rounded-2xl border border-white/10 bg-[#0B1120]/98 backdrop-blur-2xl flex flex-col overflow-hidden shadow-[0_0_50px_rgba(139,92,246,0.12)]"
+            className="flex h-[540px] w-[360px] flex-col overflow-hidden rounded-xl border border-line-strong bg-surface sm:w-[400px]"
           >
             {/* Header */}
-            <div className="bg-[#111720] border-b border-white/5 px-5 py-3.5 flex items-center justify-between shrink-0">
+            <div className="flex shrink-0 items-center justify-between border-b border-line bg-surface-hover px-5 py-3.5">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-[#8B5CF6] flex items-center justify-center shadow-[0_0_15px_rgba(139,92,246,0.3)]">
-                  <Bot className="w-5 h-5 text-white" />
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-ink">
+                  <Bot className="h-5 w-5" />
                 </div>
                 <div>
-                  <span className="font-space text-sm font-bold text-white tracking-wide flex items-center gap-1.5">
+                  <span className="flex items-center gap-1.5 font-space text-sm font-bold tracking-wide text-ink">
                     Pinaki AI
-                    <Sparkles className="w-3.5 h-3.5 text-[#06B6D4]" />
+                    <Sparkles className="h-3.5 w-3.5 text-accent" />
                   </span>
-                  <span className="flex items-center gap-1.5 text-[9px] font-mono text-green-400 tracking-wider uppercase">
-                    <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                  <span className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-wider text-positive">
+                    <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-positive" />
                     Online • {activeTab === 'chat' ? 'Text Mode' : 'Voice Mode'}
                   </span>
                 </div>
               </div>
               <button
                 onClick={() => setChatOpen(false)}
-                className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+                aria-label="Close assistant"
+                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-line bg-surface-inset text-ink-subtle transition-colors hover:border-line-strong hover:text-ink"
               >
-                <X className="w-4 h-4" />
+                <X className="h-4 w-4" />
               </button>
             </div>
 
             {/* ─── Tab Switcher ─── */}
-            <div className="flex shrink-0 border-b border-white/5 bg-[#0B1120]/60">
-              <button
-                onClick={() => setActiveTab('chat')}
-                className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-[11px] font-mono tracking-wider uppercase transition-all cursor-pointer relative ${
-                  activeTab === 'chat'
-                    ? 'text-[#06B6D4]'
-                    : 'text-white/30 hover:text-white/50'
-                }`}
-              >
-                <MessageCircle className="w-3.5 h-3.5" />
-                Chat
-                {activeTab === 'chat' && (
-                  <motion.div
-                    layoutId="activeTabIndicator"
-                    className="absolute bottom-0 left-2 right-2 h-[2px] bg-[#06B6D4] rounded-full"
-                  />
-                )}
-              </button>
-              <button
-                onClick={() => setActiveTab('voice')}
-                className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-[11px] font-mono tracking-wider uppercase transition-all cursor-pointer relative ${
-                  activeTab === 'voice'
-                    ? 'text-[#06B6D4]'
-                    : 'text-white/30 hover:text-white/50'
-                }`}
-              >
-                <Mic className="w-3.5 h-3.5" />
-                Voice
-                {activeTab === 'voice' && (
-                  <motion.div
-                    layoutId="activeTabIndicator"
-                    className="absolute bottom-0 left-2 right-2 h-[2px] bg-[#8B5CF6] rounded-full"
-                  />
-                )}
-              </button>
+            <div role="tablist" aria-label="Assistant mode" className="flex shrink-0 border-b border-line bg-surface-inset">
+              {([
+                { id: 'chat', label: 'Chat', Icon: MessageCircle },
+                { id: 'voice', label: 'Voice', Icon: Mic },
+              ] as const).map(({ id, label, Icon }) => (
+                <button
+                  key={id}
+                  role="tab"
+                  aria-selected={activeTab === id}
+                  onClick={() => setActiveTab(id)}
+                  className={`relative flex flex-1 cursor-pointer items-center justify-center gap-2 py-3 font-mono text-[11px] uppercase tracking-wider transition-colors ${
+                    activeTab === id ? 'text-accent' : 'text-ink-subtle hover:text-ink-muted'
+                  }`}
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                  {label}
+                  {activeTab === id && (
+                    <motion.span
+                      layoutId="activeTabIndicator"
+                      className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-accent"
+                    />
+                  )}
+                </button>
+              ))}
             </div>
 
             {/* ─── Tab Content ─── */}
@@ -658,25 +649,25 @@ export default function PinakiChatbot() {
                       >
                         {/* Avatar */}
                         <div
-                          className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${
+                          className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border ${
                             msg.sender === 'bot'
-                              ? 'bg-[#8B5CF6]/20 border border-[#8B5CF6]/30'
-                              : 'bg-[#06B6D4]/20 border border-[#06B6D4]/30'
+                              ? 'border-accent-line bg-accent-soft text-accent'
+                              : 'border-line bg-surface-hover text-ink-muted'
                           }`}
                         >
                           {msg.sender === 'bot' ? (
-                            <Bot className="w-3.5 h-3.5 text-[#06B6D4]" />
+                            <Bot className="h-3.5 w-3.5" />
                           ) : (
-                            <User className="w-3.5 h-3.5 text-[#8B5CF6]" />
+                            <User className="h-3.5 w-3.5" />
                           )}
                         </div>
 
                         {/* Bubble */}
                         <div
-                          className={`max-w-[80%] px-3.5 py-2.5 rounded-2xl text-[11.5px] leading-[1.65] font-poppins ${
+                          className={`max-w-[80%] rounded-xl px-3.5 py-2.5 font-poppins text-[11.5px] leading-[1.65] ${
                             msg.sender === 'user'
-                              ? 'bg-[#8B5CF6]/30 border border-[#8B5CF6]/30 text-white rounded-tr-md'
-                              : 'bg-white/[0.04] border border-white/[0.06] text-[#EDEDED]/85 rounded-tl-md'
+                              ? 'rounded-tr-sm bg-accent text-accent-ink'
+                              : 'rounded-tl-sm border border-line bg-surface-inset text-ink-muted'
                           }`}
                         >
                           {formatMessage(msg.text)}
@@ -691,13 +682,13 @@ export default function PinakiChatbot() {
                         animate={{ opacity: 1 }}
                         className="flex gap-2 items-center"
                       >
-                        <div className="w-7 h-7 rounded-lg bg-[#8B5CF6]/20 border border-[#8B5CF6]/30 flex items-center justify-center">
-                          <Bot className="w-3.5 h-3.5 text-[#06B6D4]" />
+                        <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-accent-line bg-accent-soft text-accent">
+                          <Bot className="h-3.5 w-3.5" />
                         </div>
-                        <div className="bg-white/[0.04] border border-white/[0.06] rounded-2xl rounded-tl-md px-4 py-3 flex items-center gap-1">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#06B6D4] animate-bounce" style={{ animationDelay: '0ms' }} />
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#8B5CF6] animate-bounce" style={{ animationDelay: '150ms' }} />
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#06B6D4] animate-bounce" style={{ animationDelay: '300ms' }} />
+                        <div className="flex items-center gap-1 rounded-xl rounded-tl-sm border border-line bg-surface-inset px-4 py-3">
+                          <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-accent" style={{ animationDelay: '0ms' }} />
+                          <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-accent" style={{ animationDelay: '150ms' }} />
+                          <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-accent" style={{ animationDelay: '300ms' }} />
                         </div>
                       </motion.div>
                     )}
@@ -712,7 +703,7 @@ export default function PinakiChatbot() {
                         <button
                           key={s}
                           onClick={() => handleSuggestion(s)}
-                          className="px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-[10px] font-mono text-[#06B6D4] tracking-wider uppercase hover:bg-[#06B6D4]/10 hover:border-[#06B6D4]/25 transition-all cursor-pointer"
+                          className="cursor-pointer rounded-lg border border-accent-line bg-accent-soft px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider text-accent transition-colors hover:bg-accent hover:text-accent-ink"
                         >
                           {s}
                         </button>
@@ -721,21 +712,23 @@ export default function PinakiChatbot() {
                   )}
 
                   {/* Input */}
-                  <form onSubmit={handleSend} className="border-t border-white/5 bg-[#111720]/80 px-4 py-3 flex gap-2 shrink-0">
+                  <form onSubmit={handleSend} className="flex shrink-0 gap-2 border-t border-line bg-surface-hover px-4 py-3">
                     <input
                       ref={inputRef}
                       type="text"
                       placeholder="Ask Pinaki anything..."
+                      aria-label="Message"
                       value={inputVal}
                       onChange={(e) => setInputVal(e.target.value)}
-                      className="flex-1 bg-[#050816]/80 border border-white/[0.06] rounded-xl px-4 py-2.5 text-xs text-white placeholder-white/25 focus:outline-none focus:border-[#06B6D4]/40 transition-colors"
+                      className="flex-1 rounded-lg border border-line bg-surface-inset px-4 py-2.5 font-poppins text-xs text-ink transition-colors placeholder:text-ink-subtle focus:border-accent"
                     />
                     <button
                       type="submit"
                       disabled={!inputVal.trim()}
-                      className="w-10 h-10 rounded-xl bg-[#8B5CF6] text-white flex items-center justify-center hover:bg-[#7C3AED] hover:shadow-[0_0_15px_rgba(139,92,246,0.3)] hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+                      aria-label="Send message"
+                      className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-lg bg-accent text-accent-ink transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-40"
                     >
-                      <Send className="w-4 h-4" />
+                      <Send className="h-4 w-4" />
                     </button>
                   </form>
                 </motion.div>
@@ -761,7 +754,9 @@ export default function PinakiChatbot() {
         onClick={() => setChatOpen(!chatOpen)}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="w-14 h-14 rounded-full bg-[#8B5CF6] hover:bg-[#7C3AED] flex items-center justify-center text-white shadow-[0_0_25px_rgba(139,92,246,0.35)] cursor-pointer relative group"
+        aria-label={chatOpen ? 'Close Pinaki AI Hub' : 'Open Pinaki AI Hub'}
+        aria-expanded={chatOpen}
+        className="group relative flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-accent text-accent-ink transition-colors hover:bg-accent-hover"
       >
         <AnimatePresence mode="wait">
           {chatOpen ? (
@@ -777,11 +772,17 @@ export default function PinakiChatbot() {
 
         {/* Pulse notification dot */}
         {!chatOpen && (
-          <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-green-400 rounded-full border-2 border-[#050816] animate-pulse" />
+          <span
+            aria-hidden
+            className="absolute -right-0.5 -top-0.5 h-4 w-4 animate-pulse rounded-full border-2 border-canvas bg-positive"
+          />
         )}
 
         {/* Hover tooltip */}
-        <span className="absolute bottom-full right-0 mb-2 px-3 py-1.5 rounded-lg bg-[#111720] border border-white/10 text-[10px] font-mono text-white/70 tracking-wider uppercase whitespace-nowrap opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all pointer-events-none">
+        <span
+          aria-hidden
+          className="pointer-events-none absolute bottom-full right-0 mb-2 translate-y-1 whitespace-nowrap rounded-lg border border-line bg-surface px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider text-ink-muted opacity-0 transition-all group-hover:translate-y-0 group-hover:opacity-100"
+        >
           Pinaki AI Hub
         </span>
       </motion.button>

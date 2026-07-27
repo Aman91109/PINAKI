@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -72,7 +72,8 @@ export default function Home() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.5 }}
               onClick={scrollToTop}
-              className="w-11 h-11 rounded-full border border-white/10 bg-[#111720]/80 backdrop-blur-md flex items-center justify-center text-white hover:text-[#06B6D4] hover:border-[#06B6D4] transition-colors cursor-pointer shadow-lg"
+              aria-label="Back to top"
+              className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-lg border border-line bg-surface text-ink transition-colors hover:border-accent-line hover:text-accent"
             >
               <ArrowUp className="w-5 h-5" />
             </motion.button>

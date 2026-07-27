@@ -1,9 +1,10 @@
-import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft, Clock, Calendar, User } from 'lucide-react';
 import Navbar from '@/components/ui/Navbar';
 import Footer from '@/components/ui/Footer';
+import Badge from '@/components/ui/primitives/Badge';
+import Button from '@/components/ui/primitives/Button';
 import { API_BASE_URL } from '@/config';
 
 const fallbackBlogs = [
@@ -34,7 +35,7 @@ export default function SmoothPanel() {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: 'easeOut' }}
-      className="glass-card"
+      className="rounded-xl border border-line bg-surface p-6"
     >
       <h3>Futuristic Card</h3>
     </motion.div>
@@ -127,14 +128,14 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
   if (!blog) {
     return (
-      <div className="min-h-screen bg-[#050816] flex flex-col justify-between">
+      <div className="flex min-h-screen flex-col justify-between bg-canvas">
         <Navbar />
-        <div className="max-w-md mx-auto my-auto text-center p-6">
-          <h2 className="text-3xl font-space font-bold text-white mb-4">Post Not Found</h2>
-          <p className="text-xs text-[#EDEDED]/50 mb-6">The requested insights entry does not exist on our servers.</p>
-          <Link href="/#blog" className="px-5 py-2.5 rounded-lg bg-[#06B6D4] text-white font-space text-xs uppercase tracking-widest hover:bg-[#0891B2]">
-            Back to Home
-          </Link>
+        <div className="mx-auto my-auto max-w-md p-6 text-center">
+          <h1 className="mb-4 font-space text-3xl font-bold text-ink">Post Not Found</h1>
+          <p className="mb-6 font-poppins text-sm text-ink-muted">
+            The requested insights entry does not exist on our servers.
+          </p>
+          <Button href="/#blog">Back to Home</Button>
         </div>
         <Footer />
       </div>
@@ -142,93 +143,97 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   }
 
   return (
-    <div className="min-h-screen bg-[#050816] flex flex-col justify-between">
+    <div className="flex min-h-screen flex-col justify-between bg-canvas">
       <Navbar />
 
-      {/* Floating neon glow */}
-      <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full bg-[#8B5CF6]/5 blur-[150px] pointer-events-none" />
-
-      {/* Article Content Layout */}
-      <article className="max-w-3xl mx-auto px-6 pt-32 pb-24 z-10 w-full">
-        
-        {/* Back Link */}
+      <article className="mx-auto w-full max-w-3xl px-6 pb-24 pt-32">
         <Link
           href="/#blog"
-          className="inline-flex items-center gap-2 text-xs font-mono tracking-widest text-[#06B6D4] uppercase hover:text-white transition-colors mb-8"
+          className="mb-8 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-accent transition-colors hover:text-ink"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="h-4 w-4" />
           Back to Intel Stream
         </Link>
 
-        {/* Categories / Tags */}
-        <div className="flex gap-2 mb-4">
+        <div className="mb-4 flex flex-wrap gap-2">
           {(blog.tags || []).map((tag: string) => (
-            <span key={tag} className="text-[9px] font-mono uppercase tracking-widest text-[#8B5CF6] bg-[#8B5CF6]/5 border border-[#8B5CF6]/15 px-2.5 py-0.5 rounded-full">
+            <Badge key={tag} tone="accent" size="sm">
               {tag}
-            </span>
+            </Badge>
           ))}
         </div>
 
-        {/* Title */}
-        <h1 className="text-3xl md:text-5xl font-space font-bold text-white leading-tight mb-6">
+        <h1 className="mb-6 font-space text-3xl font-bold leading-tight text-ink md:text-5xl">
           {blog.title}
         </h1>
 
-        {/* Metadata */}
-        <div className="flex flex-wrap items-center gap-6 text-xs font-mono text-[#EDEDED]/45 uppercase pb-8 border-b border-white/5 mb-8">
-          <div className="flex items-center gap-1.5">
-            <Calendar className="w-4 h-4 text-[#06B6D4]" />
+        <div className="mb-10 flex flex-wrap items-center gap-6 border-b border-line pb-8 font-mono text-xs uppercase text-ink-subtle">
+          <span className="flex items-center gap-1.5">
+            <Calendar className="h-4 w-4 text-accent" />
             {new Date(blog.createdAt).toLocaleDateString('en-US', {
               month: 'long',
               day: 'numeric',
-              year: 'numeric'
+              year: 'numeric',
             })}
-          </div>
-          <div className="flex items-center gap-1.5">
-            <Clock className="w-4 h-4 text-[#8B5CF6]" />
+          </span>
+          <span className="flex items-center gap-1.5">
+            <Clock className="h-4 w-4 text-accent" />
             {blog.readTime}
-          </div>
-          <div className="flex items-center gap-1.5">
-            <User className="w-4 h-4 text-white/50" />
-            BY {blog.author}
-          </div>
+          </span>
+          <span className="flex items-center gap-1.5">
+            <User className="h-4 w-4 text-accent" />
+            By {blog.author}
+          </span>
         </div>
 
-        {/* Giant Cover photo */}
-        <div className="relative w-full h-[250px] md:h-[420px] rounded-2xl overflow-hidden mb-12 border border-white/5">
+        <div className="relative mb-12 h-[250px] w-full overflow-hidden rounded-xl border border-line md:h-[420px]">
           <Image
             src={blog.image || 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b'}
-            alt={blog.title}
+            alt=""
             fill
             priority
-            sizes="100vw"
+            sizes="(max-width: 768px) 100vw, 768px"
             className="object-cover"
           />
         </div>
 
-        {/* Markdown Rich Body Text */}
-        <div className="prose prose-invert max-w-none text-sm md:text-base text-[#EDEDED]/70 leading-relaxed font-poppins flex flex-col gap-6">
-          {/* Simple custom renderer for preloaded markdown headings and code blocks */}
+        {/* Minimal markdown renderer for headings, code fences and paragraphs. */}
+        <div className="flex flex-col gap-5 font-poppins text-sm leading-relaxed text-ink-muted md:text-base">
           {blog.content.split('\n\n').map((para: string, idx: number) => {
             if (para.startsWith('# ')) {
-              return <h2 key={idx} className="font-space text-2xl md:text-3xl font-bold text-white mt-8 mb-2 tracking-tight">{para.replace('# ', '')}</h2>;
+              return (
+                <h2
+                  key={idx}
+                  className="mb-1 mt-6 font-space text-2xl font-bold tracking-tight text-ink md:text-3xl"
+                >
+                  {para.replace('# ', '')}
+                </h2>
+              );
             }
             if (para.startsWith('## ')) {
-              return <h3 key={idx} className="font-space text-xl md:text-2xl font-semibold text-white mt-6 mb-2 tracking-tight">{para.replace('## ', '')}</h3>;
+              return (
+                <h3
+                  key={idx}
+                  className="mb-1 mt-4 font-space text-xl font-semibold tracking-tight text-ink md:text-2xl"
+                >
+                  {para.replace('## ', '')}
+                </h3>
+              );
             }
             if (para.startsWith('```')) {
-              const lines = para.split('\n');
-              const code = lines.slice(1, -1).join('\n');
+              const code = para.split('\n').slice(1, -1).join('\n');
               return (
-                <pre key={idx} className="bg-[#111720] border border-white/5 rounded-xl p-5 overflow-x-auto font-mono text-xs text-[#06B6D4] my-4 leading-relaxed">
+                <pre
+                  key={idx}
+                  className="overflow-x-auto rounded-xl border border-line bg-surface p-5 font-mono text-xs leading-relaxed text-accent"
+                >
                   <code>{code}</code>
                 </pre>
               );
             }
-            return <p key={idx} className="mb-4">{para}</p>;
+            return <p key={idx}>{para}</p>;
           })}
         </div>
-
       </article>
 
       <Footer />
