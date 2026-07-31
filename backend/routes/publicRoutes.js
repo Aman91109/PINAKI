@@ -19,75 +19,113 @@ const FAQ = require('../models/FAQ');
 const sendEmailAlert = async (lead) => {
   const recipientEmail = process.env.EMAIL_TO || 'pinaki.sna@gmail.com';
 
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-    console.log(`[EMAIL NOTICE] SMTP credentials not fully configured in backend/.env.`);
-    console.log(`[EMAIL NOTICE] Lead from ${lead.name} (${lead.email}) stored successfully. Target recipient: ${recipientEmail}`);
-    console.log(`👉 To enable instant email delivery to ${recipientEmail}, set EMAIL_USER and EMAIL_PASS (App Password) in backend/.env`);
-    return { success: false, reason: 'SMTP credentials missing in .env' };
-  }
+  // 1. Primary Method: Nodemailer with Gmail SMTP (requires EMAIL_USER & EMAIL_PASS)
+  if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+    try {
+      const isGmail =
+        process.env.EMAIL_SERVICE === 'gmail' ||
+        process.env.EMAIL_HOST?.includes('gmail') ||
+        process.env.EMAIL_USER?.endsWith('@gmail.com');
 
-  try {
-    const isGmail =
-      process.env.EMAIL_SERVICE === 'gmail' ||
-      process.env.EMAIL_HOST?.includes('gmail') ||
-      process.env.EMAIL_USER?.endsWith('@gmail.com');
+      const transporter = nodemailer.createTransport(
+        isGmail
+          ? {
+              service: 'gmail',
+              auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS,
+              },
+            }
+          : {
+              host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+              port: Number(process.env.EMAIL_PORT) || 465,
+              secure: process.env.EMAIL_SECURE !== 'false',
+              auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS,
+              },
+            }
+      );
 
-    const transporter = nodemailer.createTransport(
-      isGmail
-        ? {
-            service: 'gmail',
-            auth: {
-              user: process.env.EMAIL_USER,
-              pass: process.env.EMAIL_PASS,
-            },
-          }
-        : {
-            host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-            port: Number(process.env.EMAIL_PORT) || 465,
-            secure: process.env.EMAIL_SECURE !== 'false',
-            auth: {
-              user: process.env.EMAIL_USER,
-              pass: process.env.EMAIL_PASS,
-            },
-          }
-    );
-
-    const mailOptions = {
-      from: `"${lead.name} via Portfolio" <${process.env.EMAIL_FROM || process.env.EMAIL_USER}>`,
-      to: recipientEmail,
-      replyTo: lead.email,
-      subject: `🚀 New Project Inquiry from ${lead.name} (${lead.projectType || 'General'})`,
-      html: `
-        <div style="font-family: 'Segoe UI', Arial, sans-serif; padding: 24px; color: #1f2937; max-width: 600px; border: 1px solid #e5e7eb; border-radius: 12px; background-color: #ffffff;">
-          <h2 style="color: #4f46e5; margin-top: 0; border-bottom: 2px solid #6366f1; padding-bottom: 8px;">
-            📥 New Project Inquiry (Step 9)
-          </h2>
-          <table style="width: 100%; border-collapse: collapse; margin-top: 16px;">
-            <tr><td style="padding: 6px 0; font-weight: bold; width: 130px;">Name:</td><td>${lead.name}</td></tr>
-            <tr><td style="padding: 6px 0; font-weight: bold;">Email:</td><td><a href="mailto:${lead.email}" style="color: #4f46e5; font-weight: bold;">${lead.email}</a></td></tr>
-            <tr><td style="padding: 6px 0; font-weight: bold;">Phone:</td><td>${lead.phone || 'N/A'}</td></tr>
-            <tr><td style="padding: 6px 0; font-weight: bold;">Company:</td><td>${lead.company || 'N/A'}</td></tr>
-            <tr><td style="padding: 6px 0; font-weight: bold;">Project Type:</td><td><span style="background-color: #e0e7ff; color: #3730a3; padding: 2px 8px; border-radius: 4px; font-weight: 600;">${lead.projectType || 'N/A'}</span></td></tr>
-            <tr><td style="padding: 6px 0; font-weight: bold;">Budget Range:</td><td>${lead.budget || 'N/A'}</td></tr>
-          </table>
-          <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 20px 0;" />
-          <h3 style="color: #111827; margin-bottom: 8px;">Message / Project Brief:</h3>
-          <div style="background-color: #f9fafb; padding: 16px; border-radius: 8px; border-left: 4px solid #6366f1; white-space: pre-wrap; font-size: 14px; line-height: 1.6;">${lead.message}</div>
-          ${lead.fileAttachment ? `<p style="margin-top: 16px;"><strong>Attachment:</strong> <a href="${lead.fileAttachment}">${lead.fileAttachment}</a></p>` : ''}
-          <div style="margin-top: 24px; font-size: 12px; color: #6b7280; border-top: 1px solid #f3f4f6; padding-top: 12px;">
-            Sent automatically from your Portfolio Contact Form (Step 9). Click "Reply" in your email app to reply directly to ${lead.email}.
+      const mailOptions = {
+        from: `"${lead.name} via Portfolio" <${process.env.EMAIL_FROM || process.env.EMAIL_USER}>`,
+        to: recipientEmail,
+        replyTo: lead.email,
+        subject: `🚀 New Project Inquiry from ${lead.name} (${lead.projectType || 'General'})`,
+        html: `
+          <div style="font-family: 'Segoe UI', Arial, sans-serif; padding: 24px; color: #1f2937; max-width: 600px; border: 1px solid #e5e7eb; border-radius: 12px; background-color: #ffffff;">
+            <h2 style="color: #4f46e5; margin-top: 0; border-bottom: 2px solid #6366f1; padding-bottom: 8px;">
+              📥 New Project Inquiry (Step 9)
+            </h2>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 16px;">
+              <tr><td style="padding: 6px 0; font-weight: bold; width: 130px;">Name:</td><td>${lead.name}</td></tr>
+              <tr><td style="padding: 6px 0; font-weight: bold;">Email:</td><td><a href="mailto:${lead.email}" style="color: #4f46e5; font-weight: bold;">${lead.email}</a></td></tr>
+              <tr><td style="padding: 6px 0; font-weight: bold;">Phone:</td><td>${lead.phone || 'N/A'}</td></tr>
+              <tr><td style="padding: 6px 0; font-weight: bold;">Company:</td><td>${lead.company || 'N/A'}</td></tr>
+              <tr><td style="padding: 6px 0; font-weight: bold;">Project Type:</td><td><span style="background-color: #e0e7ff; color: #3730a3; padding: 2px 8px; border-radius: 4px; font-weight: 600;">${lead.projectType || 'N/A'}</span></td></tr>
+              <tr><td style="padding: 6px 0; font-weight: bold;">Budget Range:</td><td>${lead.budget || 'N/A'}</td></tr>
+            </table>
+            <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 20px 0;" />
+            <h3 style="color: #111827; margin-bottom: 8px;">Message / Project Brief:</h3>
+            <div style="background-color: #f9fafb; padding: 16px; border-radius: 8px; border-left: 4px solid #6366f1; white-space: pre-wrap; font-size: 14px; line-height: 1.6;">${lead.message}</div>
+            ${lead.fileAttachment ? `<p style="margin-top: 16px;"><strong>Attachment:</strong> <a href="${lead.fileAttachment}">${lead.fileAttachment}</a></p>` : ''}
+            <div style="margin-top: 24px; font-size: 12px; color: #6b7280; border-top: 1px solid #f3f4f6; padding-top: 12px;">
+              Sent automatically from your Portfolio Contact Form (Step 9). Click "Reply" in your email app to reply directly to ${lead.email}.
+            </div>
           </div>
-        </div>
-      `,
-    };
+        `,
+      };
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log(`[EMAIL SENT] Alert email successfully sent to ${recipientEmail}. MessageId: ${info.messageId}`);
-    return { success: true, messageId: info.messageId };
-  } catch (error) {
-    console.error('[EMAIL ERROR] Nodemailer failed to send email:', error.message);
-    return { success: false, error: error.message };
+      const info = await transporter.sendMail(mailOptions);
+      console.log(`[EMAIL SENT VIA GMAIL SMTP] Alert email successfully sent to ${recipientEmail}. MessageId: ${info.messageId}`);
+      return { success: true, provider: 'nodemailer', messageId: info.messageId };
+    } catch (error) {
+      console.error('[GMAIL SMTP ERROR] Nodemailer failed:', error.message);
+      if (error.message.includes('Invalid login') || error.message.includes('Username and Password not accepted')) {
+        console.error('👉 TIP: Gmail requires a 16-character App Password (not normal password). Generate one at https://myaccount.google.com/apppasswords');
+      }
+    }
   }
+
+  // 2. Secondary Method: Web3Forms API (if WEB3FORMS_KEY is set in .env)
+  const web3Key = process.env.WEB3FORMS_KEY || process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
+  if (web3Key) {
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: web3Key,
+          subject: `🚀 New Project Inquiry from ${lead.name} (${lead.projectType || 'General'})`,
+          from_name: lead.name,
+          name: lead.name,
+          email: lead.email,
+          phone: lead.phone || '',
+          company: lead.company || '',
+          budget: lead.budget || '',
+          projectType: lead.projectType || '',
+          message: lead.message,
+        }),
+      });
+      const data = await response.json();
+      if (data.success) {
+        console.log(`[EMAIL SENT VIA WEB3FORMS] Alert email successfully delivered to ${recipientEmail}`);
+        return { success: true, provider: 'web3forms' };
+      }
+    } catch (err) {
+      console.error('[WEB3FORMS ERROR]', err.message);
+    }
+  }
+
+  // 3. Fallback notice
+  console.log(`[EMAIL NOTICE] Lead saved to database! SMTP credentials not configured in backend/.env.`);
+  console.log(`👉 To enable instant email delivery to ${recipientEmail}:`);
+  console.log(`   Set EMAIL_USER=pinaki.sna@gmail.com and EMAIL_PASS=your_16_character_app_password in backend/.env`);
+  return {
+    success: false,
+    reason: 'EMAIL_PASS (Gmail App Password) is empty in backend/.env',
+    instructions: 'Get a 16-character Google App Password from https://myaccount.google.com/apppasswords and set EMAIL_PASS in backend/.env',
+  };
 };
 
 // @desc    Get all services
@@ -320,6 +358,40 @@ router.post('/newsletter', async (req, res) => {
       success: true,
       message: 'Subscribed to newsletter successfully!',
     });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// @desc    Test Email Delivery to pinaki.sna@gmail.com
+router.get('/test-email', async (req, res) => {
+  try {
+    const testLead = {
+      name: 'Test Visitor',
+      email: 'visitor@example.com',
+      phone: '+91 9508725672',
+      company: 'Test Company',
+      budget: '₹1,00,000 – ₹3,00,000',
+      projectType: 'Web application',
+      message: 'This is an automated test message to verify email delivery to pinaki.sna@gmail.com.',
+    };
+
+    const emailStatus = await sendEmailAlert(testLead);
+
+    if (emailStatus.success) {
+      return res.status(200).json({
+        success: true,
+        message: 'Test email successfully sent to ' + (process.env.EMAIL_TO || 'pinaki.sna@gmail.com'),
+        emailStatus,
+      });
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: 'Email delivery failed.',
+        emailStatus,
+        tip: 'Ensure EMAIL_PASS (16-char Google App Password) is set in backend/.env',
+      });
+    }
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
