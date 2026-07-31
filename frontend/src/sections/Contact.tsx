@@ -112,7 +112,6 @@ export default function Contact() {
     }
 
     setStatus('submitting');
-    const finalMessage = `${formData.message}\n\n[Budget: ${formData.budget}]`;
 
     try {
       const bodyData = new FormData();
@@ -120,8 +119,9 @@ export default function Contact() {
       bodyData.append('email', formData.email);
       bodyData.append('phone', '');
       bodyData.append('company', formData.company);
+      bodyData.append('budget', formData.budget);
       bodyData.append('projectType', formData.projectType);
-      bodyData.append('message', finalMessage);
+      bodyData.append('message', formData.message);
 
       const res = await fetch(`${API_BASE_URL}/api/public/lead`, {
         method: 'POST',
@@ -129,10 +129,10 @@ export default function Contact() {
       });
       const data = await res.json();
 
-      if (!data.success) saveLeadLocally({ ...formData, message: finalMessage });
+      if (!data.success) saveLeadLocally(formData);
     } catch (err) {
       console.warn('Lead API offline, saving locally:', err);
-      saveLeadLocally({ ...formData, message: finalMessage });
+      saveLeadLocally(formData);
     }
 
     setStatus('success');

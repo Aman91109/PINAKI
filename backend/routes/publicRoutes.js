@@ -17,43 +17,76 @@ const FAQ = require('../models/FAQ');
 
 // Helper: Send email notification
 const sendEmailAlert = async (lead) => {
+  const recipientEmail = process.env.EMAIL_TO || 'pinaki.sna@gmail.com';
+
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-    console.log(`[MOCK EMAIL ALERT] SMTP not configured. Lead submitted:`, lead);
-    return;
+    console.log(`[EMAIL NOTICE] SMTP credentials not fully configured in backend/.env.`);
+    console.log(`[EMAIL NOTICE] Lead from ${lead.name} (${lead.email}) stored successfully. Target recipient: ${recipientEmail}`);
+    console.log(`👉 To enable instant email delivery to ${recipientEmail}, set EMAIL_USER and EMAIL_PASS (App Password) in backend/.env`);
+    return { success: false, reason: 'SMTP credentials missing in .env' };
   }
 
   try {
-    const transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST || 'smtp.mailtrap.io',
-      port: process.env.EMAIL_PORT || 2525,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+    const isGmail =
+      process.env.EMAIL_SERVICE === 'gmail' ||
+      process.env.EMAIL_HOST?.includes('gmail') ||
+      process.env.EMAIL_USER?.endsWith('@gmail.com');
+
+    const transporter = nodemailer.createTransport(
+      isGmail
+        ? {
+            service: 'gmail',
+            auth: {
+              user: process.env.EMAIL_USER,
+              pass: process.env.EMAIL_PASS,
+            },
+          }
+        : {
+            host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+            port: Number(process.env.EMAIL_PORT) || 465,
+            secure: process.env.EMAIL_SECURE !== 'false',
+            auth: {
+              user: process.env.EMAIL_USER,
+              pass: process.env.EMAIL_PASS,
+            },
+          }
+    );
 
     const mailOptions = {
-      from: process.env.EMAIL_FROM || 'noreply@agency.com',
-      to: process.env.EMAIL_TO || 'admin@agency.com',
-      subject: `New Lead Submitted: ${lead.projectType} from ${lead.name}`,
+      from: `"${lead.name} via Portfolio" <${process.env.EMAIL_FROM || process.env.EMAIL_USER}>`,
+      to: recipientEmail,
+      replyTo: lead.email,
+      subject: `🚀 New Project Inquiry from ${lead.name} (${lead.projectType || 'General'})`,
       html: `
-        <h2>New Project Inquiry Details</h2>
-        <p><strong>Name:</strong> ${lead.name}</p>
-        <p><strong>Email:</strong> ${lead.email}</p>
-        <p><strong>Phone:</strong> ${lead.phone || 'N/A'}</p>
-        <p><strong>Company:</strong> ${lead.company || 'N/A'}</p>
-        <p><strong>ProjectType:</strong> ${lead.projectType}</p>
-        <p><strong>Budget Range:</strong> ${lead.budget}</p>
-        <p><strong>Message:</strong></p>
-        <p>${lead.message}</p>
-        <p><strong>Attachment:</strong> ${lead.fileAttachment || 'None'}</p>
+        <div style="font-family: 'Segoe UI', Arial, sans-serif; padding: 24px; color: #1f2937; max-width: 600px; border: 1px solid #e5e7eb; border-radius: 12px; background-color: #ffffff;">
+          <h2 style="color: #4f46e5; margin-top: 0; border-bottom: 2px solid #6366f1; padding-bottom: 8px;">
+            📥 New Project Inquiry (Step 9)
+          </h2>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 16px;">
+            <tr><td style="padding: 6px 0; font-weight: bold; width: 130px;">Name:</td><td>${lead.name}</td></tr>
+            <tr><td style="padding: 6px 0; font-weight: bold;">Email:</td><td><a href="mailto:${lead.email}" style="color: #4f46e5; font-weight: bold;">${lead.email}</a></td></tr>
+            <tr><td style="padding: 6px 0; font-weight: bold;">Phone:</td><td>${lead.phone || 'N/A'}</td></tr>
+            <tr><td style="padding: 6px 0; font-weight: bold;">Company:</td><td>${lead.company || 'N/A'}</td></tr>
+            <tr><td style="padding: 6px 0; font-weight: bold;">Project Type:</td><td><span style="background-color: #e0e7ff; color: #3730a3; padding: 2px 8px; border-radius: 4px; font-weight: 600;">${lead.projectType || 'N/A'}</span></td></tr>
+            <tr><td style="padding: 6px 0; font-weight: bold;">Budget Range:</td><td>${lead.budget || 'N/A'}</td></tr>
+          </table>
+          <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 20px 0;" />
+          <h3 style="color: #111827; margin-bottom: 8px;">Message / Project Brief:</h3>
+          <div style="background-color: #f9fafb; padding: 16px; border-radius: 8px; border-left: 4px solid #6366f1; white-space: pre-wrap; font-size: 14px; line-height: 1.6;">${lead.message}</div>
+          ${lead.fileAttachment ? `<p style="margin-top: 16px;"><strong>Attachment:</strong> <a href="${lead.fileAttachment}">${lead.fileAttachment}</a></p>` : ''}
+          <div style="margin-top: 24px; font-size: 12px; color: #6b7280; border-top: 1px solid #f3f4f6; padding-top: 12px;">
+            Sent automatically from your Portfolio Contact Form (Step 9). Click "Reply" in your email app to reply directly to ${lead.email}.
+          </div>
+        </div>
       `,
     };
 
-    await transporter.sendMail(mailOptions);
-    console.log('Email alert sent successfully.');
+    const info = await transporter.sendMail(mailOptions);
+    console.log(`[EMAIL SENT] Alert email successfully sent to ${recipientEmail}. MessageId: ${info.messageId}`);
+    return { success: true, messageId: info.messageId };
   } catch (error) {
-    console.error('Nodemailer error:', error.message);
+    console.error('[EMAIL ERROR] Nodemailer failed to send email:', error.message);
+    return { success: false, error: error.message };
   }
 };
 
@@ -208,21 +241,22 @@ router.post('/lead', upload.single('fileAttachment'), async (req, res) => {
       const lead = mockDb.create('Lead', {
         name,
         email,
-        phone,
-        company,
-        budget,
-        projectType,
+        phone: phone || '',
+        company: company || '',
+        budget: budget || 'Not sure yet',
+        projectType: projectType || 'Web application',
         message,
         fileAttachment: fileUrl,
         status: 'New',
       });
 
-      sendEmailAlert(lead);
+      const emailStatus = await sendEmailAlert(lead);
 
       return res.status(201).json({
         success: true,
         message: 'Inquiry submitted successfully! Our team will contact you shortly.',
         data: lead,
+        emailStatus,
       });
     }
 
@@ -230,22 +264,24 @@ router.post('/lead', upload.single('fileAttachment'), async (req, res) => {
     const lead = await Lead.create({
       name,
       email,
-      phone,
-      company,
-      budget,
-      projectType,
+      phone: phone || '',
+      company: company || '',
+      budget: budget || 'Not sure yet',
+      projectType: projectType || 'Web application',
       message,
       fileAttachment: fileUrl,
     });
 
-    sendEmailAlert(lead);
+    const emailStatus = await sendEmailAlert(lead);
 
     res.status(201).json({
       success: true,
       message: 'Inquiry submitted successfully! Our team will contact you shortly.',
       data: lead,
+      emailStatus,
     });
   } catch (error) {
+    console.error('Lead submission error:', error);
     res.status(500).json({ success: false, error: error.message });
   }
 });
