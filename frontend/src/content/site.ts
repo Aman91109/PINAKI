@@ -26,10 +26,10 @@ export const AVAILABILITY = {
 export const STACK = ['Next.js', 'Node', 'Python', 'PostgreSQL', 'AWS'] as const;
 
 export const STATS = [
-  { value: 120, suffix: '+', label: 'Projects shipped' },
-  { value: 50, suffix: '+', label: 'Clients served' },
-  { value: 5, suffix: '+', label: 'Years building' },
-  { value: 98, suffix: '%', label: 'On-time delivery' },
+  { value: 15, suffix: '+', label: 'Projects shipped' },
+  { value: 7, suffix: '', label: 'Clients served' },
+  { value: 2, suffix: '+', label: 'Years building' },
+  { value: 100, suffix: '%', label: 'On-time delivery' },
 ] as const;
 
 export const NAV_ITEMS = [

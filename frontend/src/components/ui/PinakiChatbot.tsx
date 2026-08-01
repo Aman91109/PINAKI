@@ -340,7 +340,7 @@ const KNOWLEDGE_BASE: { keywords: string[]; response: string; priority: number }
   // ═══════════════════════════════════════════
   {
     keywords: ['help', 'assist', 'guide', 'faq', 'question', 'doubt'],
-    response: "💡 **I can help you with:**\n\n• 🌐 Our Services (16 different offerings)\n• 👨‍💻 Team Information (Somesh, Nishant, Aman)\n• ⚙️ Our Development Process (7 phases)\n• 📊 Portfolio & Stats (120+ projects)\n• 🛠️ Technology Stack\n• 📬 Contact Details\n• ⭐ Client Testimonials\n• ⏱️ Project Timelines\n• 🔐 Security Measures\n• 💬 Custom Quote Discussion\n\nJust type your question and I'll provide detailed answers!",
+    response: "💡 **I can help you with:**\n\n• 🌐 Our Services (16 different offerings)\n• 👨‍💻 Team Information (Somesh, Nishant, Aman)\n• ⚙️ Our Development Process (7 phases)\n• 📊 Portfolio & Stats (15+ projects)\n• 🛠️ Technology Stack\n• 📬 Contact Details\n• ⭐ Client Testimonials\n• ⏱️ Project Timelines\n• 🔐 Security Measures\n• 💬 Custom Quote Discussion\n\nJust type your question and I'll provide detailed answers!",
     priority: 2,
   },
 ];
