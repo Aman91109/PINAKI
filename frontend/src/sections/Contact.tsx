@@ -20,7 +20,6 @@ import {
   Input,
   Section,
   SectionHeading,
-  Select,
   Textarea,
 } from '@/components/ui/primitives';
 import { cn } from '@/lib/cn';
@@ -36,17 +35,7 @@ const projectTypes = [
   'Something else',
 ];
 
-/**
- * Budget bands qualify leads before the call. Adjust these to match your own
- * floor — they are appended to the message body, so the API needs no changes.
- */
-const budgetBands = [
-  'Not sure yet',
-  'Under ₹1,00,000',
-  '₹1,00,000 – ₹3,00,000',
-  '₹3,00,000 – ₹8,00,000',
-  'Over ₹8,00,000',
-];
+
 
 const channels = [
   {
@@ -77,7 +66,6 @@ const emptyForm = {
   email: '',
   company: '',
   projectType: 'Web application',
-  budget: 'Not sure yet',
   message: '',
 };
 
@@ -119,7 +107,6 @@ export default function Contact() {
       bodyData.append('email', formData.email);
       bodyData.append('phone', '');
       bodyData.append('company', formData.company);
-      bodyData.append('budget', formData.budget);
       bodyData.append('projectType', formData.projectType);
       bodyData.append('message', formData.message);
 
@@ -279,22 +266,7 @@ export default function Contact() {
                       />
                     )}
                   </Field>
-                  <Field label="Budget range">
-                    {(id) => (
-                      <Select
-                        id={id}
-                        name="budget"
-                        value={formData.budget}
-                        onChange={handleInputChange}
-                      >
-                        {budgetBands.map((band) => (
-                          <option key={band} value={band}>
-                            {band}
-                          </option>
-                        ))}
-                      </Select>
-                    )}
-                  </Field>
+
                 </div>
 
                 <fieldset>

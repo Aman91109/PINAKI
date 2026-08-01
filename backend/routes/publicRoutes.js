@@ -340,6 +340,16 @@ router.post('/newsletter', async (req, res) => {
 
       mockDb.create('Subscriber', { email });
 
+      // Send notification email
+      await sendEmailAlert({
+        name: 'Newsletter Subscriber',
+        email: email,
+        phone: '',
+        company: '',
+        projectType: 'Newsletter Signup',
+        message: `New newsletter subscription from: ${email}`,
+      });
+
       return res.status(201).json({
         success: true,
         message: 'Subscribed to newsletter successfully!',
@@ -353,6 +363,16 @@ router.post('/newsletter', async (req, res) => {
     }
 
     await Subscriber.create({ email });
+
+    // Send notification email
+    await sendEmailAlert({
+      name: 'Newsletter Subscriber',
+      email: email,
+      phone: '',
+      company: '',
+      projectType: 'Newsletter Signup',
+      message: `New newsletter subscription from: ${email}`,
+    });
 
     res.status(201).json({
       success: true,
