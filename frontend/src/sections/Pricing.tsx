@@ -136,11 +136,7 @@ export default function Pricing() {
         })}
       </div>
 
-      <p className="mt-8 rounded-xl border border-line bg-surface px-6 py-5 text-sm leading-relaxed text-ink-muted">
-        <span className="font-semibold text-ink">Not sure which fits?</span> Send over what you have
-        — a brief, a sketch, or just a paragraph describing the problem. We reply {CONTACT.responseTime}{' '}
-        with a recommendation and a number, whether or not you go ahead with us.
-      </p>
+
     </Section>
   );
 }
