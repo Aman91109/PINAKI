@@ -27,25 +27,19 @@ const sendEmailAlert = async (lead) => {
         process.env.EMAIL_HOST?.includes('gmail') ||
         process.env.EMAIL_USER?.endsWith('@gmail.com');
 
-      const transporter = nodemailer.createTransport(
-        isGmail
-          ? {
-              service: 'gmail',
-              auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS,
-              },
-            }
-          : {
-              host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-              port: Number(process.env.EMAIL_PORT) || 465,
-              secure: process.env.EMAIL_SECURE !== 'false',
-              auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS,
-              },
-            }
-      );
+      // Use port 587 + STARTTLS (more reliable than port 465/SSL across networks)
+      const transporter = nodemailer.createTransport({
+        host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+        port: Number(process.env.EMAIL_PORT) || 587,
+        secure: false, // STARTTLS upgrades after connect
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+        tls: {
+          rejectUnauthorized: false,
+        },
+      });
 
       const mailOptions = {
         from: `"${lead.name} via Portfolio" <${process.env.EMAIL_FROM || process.env.EMAIL_USER}>`,
