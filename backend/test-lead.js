@@ -22,11 +22,14 @@ const options = {
   },
 };
 
+const startTime = Date.now();
 const req = http.request(options, (res) => {
   let data = '';
   res.on('data', (chunk) => { data += chunk; });
   res.on('end', () => {
+    const duration = Date.now() - startTime;
     console.log('Status:', res.statusCode);
+    console.log('Response Time:', duration + 'ms');
     console.log('Response:', JSON.stringify(JSON.parse(data), null, 2));
   });
 });
@@ -37,3 +40,4 @@ req.on('error', (e) => {
 
 req.write(postData);
 req.end();
+

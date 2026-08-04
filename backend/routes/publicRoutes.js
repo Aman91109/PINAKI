@@ -282,13 +282,13 @@ router.post('/lead', upload.single('fileAttachment'), async (req, res) => {
         status: 'New',
       });
 
-      const emailStatus = await sendEmailAlert(lead);
+      // Send email alert in the background (asynchronously) to keep response time extremely fast
+      sendEmailAlert(lead);
 
       return res.status(201).json({
         success: true,
         message: 'Inquiry submitted successfully! Our team will contact you shortly.',
         data: lead,
-        emailStatus,
       });
     }
 
@@ -304,13 +304,13 @@ router.post('/lead', upload.single('fileAttachment'), async (req, res) => {
       fileAttachment: fileUrl,
     });
 
-    const emailStatus = await sendEmailAlert(lead);
+    // Send email alert in the background (asynchronously) to keep response time extremely fast
+    sendEmailAlert(lead);
 
     res.status(201).json({
       success: true,
       message: 'Inquiry submitted successfully! Our team will contact you shortly.',
       data: lead,
-      emailStatus,
     });
   } catch (error) {
     console.error('Lead submission error:', error);
@@ -334,8 +334,8 @@ router.post('/newsletter', async (req, res) => {
 
       mockDb.create('Subscriber', { email });
 
-      // Send notification email
-      await sendEmailAlert({
+      // Send notification email in background (asynchronously) to keep response time fast
+      sendEmailAlert({
         name: 'Newsletter Subscriber',
         email: email,
         phone: '',
@@ -358,8 +358,8 @@ router.post('/newsletter', async (req, res) => {
 
     await Subscriber.create({ email });
 
-    // Send notification email
-    await sendEmailAlert({
+    // Send notification email in background (asynchronously) to keep response time fast
+    sendEmailAlert({
       name: 'Newsletter Subscriber',
       email: email,
       phone: '',
