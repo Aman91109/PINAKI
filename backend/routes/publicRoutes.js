@@ -15,75 +15,98 @@ const Subscriber = require('../models/Subscriber');
 const Service = require('../models/Service');
 const FAQ = require('../models/FAQ');
 
-// Helper: Send email notification
+// Helper: Build the HTML email body from a lead object
+const buildEmailHtml = (lead) => `
+  <div style="font-family: 'Segoe UI', Arial, sans-serif; padding: 24px; color: #1f2937; max-width: 600px; border: 1px solid #e5e7eb; border-radius: 12px; background-color: #ffffff;">
+    <h2 style="color: #4f46e5; margin-top: 0; border-bottom: 2px solid #6366f1; padding-bottom: 8px;">
+      📥 New Project Inquiry (Step 9)
+    </h2>
+    <table style="width: 100%; border-collapse: collapse; margin-top: 16px;">
+      <tr><td style="padding: 6px 0; font-weight: bold; width: 130px;">Name:</td><td>${lead.name}</td></tr>
+      <tr><td style="padding: 6px 0; font-weight: bold;">Email:</td><td><a href="mailto:${lead.email}" style="color: #4f46e5; font-weight: bold;">${lead.email}</a></td></tr>
+      <tr><td style="padding: 6px 0; font-weight: bold;">Phone:</td><td>${lead.phone || 'N/A'}</td></tr>
+      <tr><td style="padding: 6px 0; font-weight: bold;">Company:</td><td>${lead.company || 'N/A'}</td></tr>
+      <tr><td style="padding: 6px 0; font-weight: bold;">Project Type:</td><td><span style="background-color: #e0e7ff; color: #3730a3; padding: 2px 8px; border-radius: 4px; font-weight: 600;">${lead.projectType || 'N/A'}</span></td></tr>
+      <tr><td style="padding: 6px 0; font-weight: bold;">Budget Range:</td><td>${lead.budget || 'N/A'}</td></tr>
+    </table>
+    <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 20px 0;" />
+    <h3 style="color: #111827; margin-bottom: 8px;">Message / Project Brief:</h3>
+    <div style="background-color: #f9fafb; padding: 16px; border-radius: 8px; border-left: 4px solid #6366f1; white-space: pre-wrap; font-size: 14px; line-height: 1.6;">${lead.message}</div>
+    ${lead.fileAttachment ? `<p style="margin-top: 16px;"><strong>Attachment:</strong> <a href="${lead.fileAttachment}">${lead.fileAttachment}</a></p>` : ''}
+    <div style="margin-top: 24px; font-size: 12px; color: #6b7280; border-top: 1px solid #f3f4f6; padding-top: 12px;">
+      Sent automatically from your Portfolio Contact Form (Step 9). Click "Reply" in your email app to reply directly to ${lead.email}.
+    </div>
+  </div>
+`;
+
+// Helper: Try sending mail with a given transporter config (with 1 retry)
+const trySendMail = async (transportConfig, mailOptions, label) => {
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      const transporter = nodemailer.createTransport(transportConfig);
+      const info = await transporter.sendMail(mailOptions);
+      console.log(`[EMAIL SENT via ${label}] MessageId: ${info.messageId} (attempt ${attempt})`);
+      return info;
+    } catch (err) {
+      console.warn(`[EMAIL ATTEMPT ${attempt}/2 via ${label}] ${err.message}`);
+      if (attempt < 2) await new Promise(r => setTimeout(r, 1500)); // wait 1.5s before retry
+    }
+  }
+  return null; // both attempts failed
+};
+
+// Helper: Send email notification — tries 3 SMTP strategies + Web3Forms fallback
 const sendEmailAlert = async (lead) => {
   const recipientEmail = process.env.EMAIL_TO || 'pinaki.sna@gmail.com';
 
-  // 1. Primary Method: Nodemailer with Gmail SMTP (requires EMAIL_USER & EMAIL_PASS)
   if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-    try {
-      const isGmail =
-        process.env.EMAIL_SERVICE === 'gmail' ||
-        process.env.EMAIL_HOST?.includes('gmail') ||
-        process.env.EMAIL_USER?.endsWith('@gmail.com');
+    const authConfig = {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    };
 
-      const smtpPort = Number(process.env.EMAIL_PORT) || 587;
-      const isSecure = smtpPort === 465;
+    const mailOptions = {
+      from: `"${lead.name} via Portfolio" <${process.env.EMAIL_FROM || process.env.EMAIL_USER}>`,
+      to: recipientEmail,
+      replyTo: lead.email,
+      subject: `🚀 New Project Inquiry from ${lead.name} (${lead.projectType || 'General'})`,
+      html: buildEmailHtml(lead),
+    };
 
-      const transporter = nodemailer.createTransport({
-        host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-        port: smtpPort,
-        secure: isSecure,
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-        tls: {
-          rejectUnauthorized: false,
-        },
-      });
+    const timeouts = {
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 15000,
+    };
 
-      const mailOptions = {
-        from: `"${lead.name} via Portfolio" <${process.env.EMAIL_FROM || process.env.EMAIL_USER}>`,
-        to: recipientEmail,
-        replyTo: lead.email,
-        subject: `🚀 New Project Inquiry from ${lead.name} (${lead.projectType || 'General'})`,
-        html: `
-          <div style="font-family: 'Segoe UI', Arial, sans-serif; padding: 24px; color: #1f2937; max-width: 600px; border: 1px solid #e5e7eb; border-radius: 12px; background-color: #ffffff;">
-            <h2 style="color: #4f46e5; margin-top: 0; border-bottom: 2px solid #6366f1; padding-bottom: 8px;">
-              📥 New Project Inquiry (Step 9)
-            </h2>
-            <table style="width: 100%; border-collapse: collapse; margin-top: 16px;">
-              <tr><td style="padding: 6px 0; font-weight: bold; width: 130px;">Name:</td><td>${lead.name}</td></tr>
-              <tr><td style="padding: 6px 0; font-weight: bold;">Email:</td><td><a href="mailto:${lead.email}" style="color: #4f46e5; font-weight: bold;">${lead.email}</a></td></tr>
-              <tr><td style="padding: 6px 0; font-weight: bold;">Phone:</td><td>${lead.phone || 'N/A'}</td></tr>
-              <tr><td style="padding: 6px 0; font-weight: bold;">Company:</td><td>${lead.company || 'N/A'}</td></tr>
-              <tr><td style="padding: 6px 0; font-weight: bold;">Project Type:</td><td><span style="background-color: #e0e7ff; color: #3730a3; padding: 2px 8px; border-radius: 4px; font-weight: 600;">${lead.projectType || 'N/A'}</span></td></tr>
-              <tr><td style="padding: 6px 0; font-weight: bold;">Budget Range:</td><td>${lead.budget || 'N/A'}</td></tr>
-            </table>
-            <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 20px 0;" />
-            <h3 style="color: #111827; margin-bottom: 8px;">Message / Project Brief:</h3>
-            <div style="background-color: #f9fafb; padding: 16px; border-radius: 8px; border-left: 4px solid #6366f1; white-space: pre-wrap; font-size: 14px; line-height: 1.6;">${lead.message}</div>
-            ${lead.fileAttachment ? `<p style="margin-top: 16px;"><strong>Attachment:</strong> <a href="${lead.fileAttachment}">${lead.fileAttachment}</a></p>` : ''}
-            <div style="margin-top: 24px; font-size: 12px; color: #6b7280; border-top: 1px solid #f3f4f6; padding-top: 12px;">
-              Sent automatically from your Portfolio Contact Form (Step 9). Click "Reply" in your email app to reply directly to ${lead.email}.
-            </div>
-          </div>
-        `,
-      };
+    // Strategy 1: service:'gmail' (lets Nodemailer pick the best port automatically)
+    const result1 = await trySendMail(
+      { service: 'gmail', auth: authConfig, ...timeouts, tls: { rejectUnauthorized: false } },
+      mailOptions,
+      'gmail-service'
+    );
+    if (result1) return { success: true, provider: 'nodemailer', messageId: result1.messageId };
 
-      const info = await transporter.sendMail(mailOptions);
-      console.log(`[EMAIL SENT VIA GMAIL SMTP] Alert email successfully sent to ${recipientEmail}. MessageId: ${info.messageId}`);
-      return { success: true, provider: 'nodemailer', messageId: info.messageId };
-    } catch (error) {
-      console.error('[GMAIL SMTP ERROR] Nodemailer failed:', error.message);
-      if (error.message.includes('Invalid login') || error.message.includes('Username and Password not accepted')) {
-        console.error('👉 TIP: Gmail requires a 16-character App Password (not normal password). Generate one at https://myaccount.google.com/apppasswords');
-      }
-    }
+    // Strategy 2: Port 465 / SSL (direct TLS)
+    const result2 = await trySendMail(
+      { host: 'smtp.gmail.com', port: 465, secure: true, auth: authConfig, ...timeouts, tls: { rejectUnauthorized: false } },
+      mailOptions,
+      'port-465-ssl'
+    );
+    if (result2) return { success: true, provider: 'nodemailer', messageId: result2.messageId };
+
+    // Strategy 3: Port 587 / STARTTLS
+    const result3 = await trySendMail(
+      { host: 'smtp.gmail.com', port: 587, secure: false, auth: authConfig, ...timeouts, tls: { rejectUnauthorized: false } },
+      mailOptions,
+      'port-587-starttls'
+    );
+    if (result3) return { success: true, provider: 'nodemailer', messageId: result3.messageId };
+
+    console.error('[EMAIL] All 3 SMTP strategies failed after retries.');
   }
 
-  // 2. Secondary Method: Web3Forms API (if WEB3FORMS_KEY is set in .env)
+  // Fallback: Web3Forms API (if WEB3FORMS_KEY is set in .env)
   const web3Key = process.env.WEB3FORMS_KEY || process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
   if (web3Key) {
     try {
@@ -105,7 +128,7 @@ const sendEmailAlert = async (lead) => {
       });
       const data = await response.json();
       if (data.success) {
-        console.log(`[EMAIL SENT VIA WEB3FORMS] Alert email successfully delivered to ${recipientEmail}`);
+        console.log(`[EMAIL SENT VIA WEB3FORMS] Delivered to ${recipientEmail}`);
         return { success: true, provider: 'web3forms' };
       }
     } catch (err) {
@@ -113,15 +136,9 @@ const sendEmailAlert = async (lead) => {
     }
   }
 
-  // 3. Fallback notice
-  console.log(`[EMAIL NOTICE] Lead saved to database! SMTP credentials not configured in backend/.env.`);
-  console.log(`👉 To enable instant email delivery to ${recipientEmail}:`);
-  console.log(`   Set EMAIL_USER=pinaki.sna@gmail.com and EMAIL_PASS=your_16_character_app_password in backend/.env`);
-  return {
-    success: false,
-    reason: 'EMAIL_PASS (Gmail App Password) is empty in backend/.env',
-    instructions: 'Get a 16-character Google App Password from https://myaccount.google.com/apppasswords and set EMAIL_PASS in backend/.env',
-  };
+  // All methods failed
+  console.log(`[EMAIL FAILED] All delivery methods exhausted for lead from ${lead.email}.`);
+  return { success: false, reason: 'All email delivery methods failed' };
 };
 
 // @desc    Get all services
@@ -284,14 +301,14 @@ router.post('/lead', upload.single('fileAttachment'), async (req, res) => {
         status: 'New',
       });
 
-      // Send email alert in the background (asynchronously) to keep response time extremely fast
-      sendEmailAlert(lead);
-
-      return res.status(201).json({
+      // Respond immediately, then send the email (handler stays alive until email completes)
+      res.status(201).json({
         success: true,
         message: 'Inquiry submitted successfully! Our team will contact you shortly.',
         data: lead,
       });
+      await sendEmailAlert(lead).catch(err => console.error('[EMAIL BG ERROR]', err.message));
+      return;
     }
 
     // Mongoose execution
@@ -306,14 +323,13 @@ router.post('/lead', upload.single('fileAttachment'), async (req, res) => {
       fileAttachment: fileUrl,
     });
 
-    // Send email alert in the background (asynchronously) to keep response time extremely fast
-    sendEmailAlert(lead);
-
+    // Respond immediately, then send the email (handler stays alive until email completes)
     res.status(201).json({
       success: true,
       message: 'Inquiry submitted successfully! Our team will contact you shortly.',
       data: lead,
     });
+    await sendEmailAlert(lead).catch(err => console.error('[EMAIL BG ERROR]', err.message));
   } catch (error) {
     console.error('Lead submission error:', error);
     res.status(500).json({ success: false, error: error.message });
@@ -336,20 +352,20 @@ router.post('/newsletter', async (req, res) => {
 
       mockDb.create('Subscriber', { email });
 
-      // Send notification email in background (asynchronously) to keep response time fast
-      sendEmailAlert({
+      // Respond immediately, then send the email (handler stays alive until email completes)
+      res.status(201).json({
+        success: true,
+        message: 'Subscribed to newsletter successfully!',
+      });
+      await sendEmailAlert({
         name: 'Newsletter Subscriber',
         email: email,
         phone: '',
         company: '',
         projectType: 'Newsletter Signup',
         message: `New newsletter subscription from: ${email}`,
-      });
-
-      return res.status(201).json({
-        success: true,
-        message: 'Subscribed to newsletter successfully!',
-      });
+      }).catch(err => console.error('[EMAIL BG ERROR]', err.message));
+      return;
     }
 
     // Mongoose execution
@@ -360,20 +376,19 @@ router.post('/newsletter', async (req, res) => {
 
     await Subscriber.create({ email });
 
-    // Send notification email in background (asynchronously) to keep response time fast
-    sendEmailAlert({
+    // Respond immediately, then send the email (handler stays alive until email completes)
+    res.status(201).json({
+      success: true,
+      message: 'Subscribed to newsletter successfully!',
+    });
+    await sendEmailAlert({
       name: 'Newsletter Subscriber',
       email: email,
       phone: '',
       company: '',
       projectType: 'Newsletter Signup',
       message: `New newsletter subscription from: ${email}`,
-    });
-
-    res.status(201).json({
-      success: true,
-      message: 'Subscribed to newsletter successfully!',
-    });
+    }).catch(err => console.error('[EMAIL BG ERROR]', err.message));
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
