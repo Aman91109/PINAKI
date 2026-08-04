@@ -20,9 +20,9 @@ services:
       - key: EMAIL_HOST
         value: smtp.gmail.com
       - key: EMAIL_PORT
-        value: 465
+        value: 587
       - key: EMAIL_SECURE
-        value: true
+        value: false
       - key: EMAIL_SERVICE
         value: gmail
       - key: EMAIL_USER

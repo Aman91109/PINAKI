@@ -27,11 +27,13 @@ const sendEmailAlert = async (lead) => {
         process.env.EMAIL_HOST?.includes('gmail') ||
         process.env.EMAIL_USER?.endsWith('@gmail.com');
 
-      // Use port 587 + STARTTLS (more reliable than port 465/SSL across networks)
+      const smtpPort = Number(process.env.EMAIL_PORT) || 587;
+      const isSecure = smtpPort === 465;
+
       const transporter = nodemailer.createTransport({
         host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-        port: Number(process.env.EMAIL_PORT) || 587,
-        secure: false, // STARTTLS upgrades after connect
+        port: smtpPort,
+        secure: isSecure,
         auth: {
           user: process.env.EMAIL_USER,
           pass: process.env.EMAIL_PASS,
