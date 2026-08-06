@@ -28,8 +28,12 @@ services:
       - key: EMAIL_USER
         value: pinaki.sna@gmail.com
       - key: EMAIL_PASS
-        value: ukeleaylniricoqr
+        value: gbubjldjjlfecpuc
       - key: EMAIL_FROM
         value: pinaki.sna@gmail.com
       - key: EMAIL_TO
         value: pinaki.sna@gmail.com
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: CRON_SECRET
+        sync: false
