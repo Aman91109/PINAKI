@@ -79,27 +79,27 @@ const sendEmailAlert = async (lead) => {
       socketTimeout: 15000,
     };
 
-    // Strategy 1: service:'gmail' (lets Nodemailer pick the best port automatically)
+    // Strategy 1: Port 587 / STARTTLS (fast & works on local networks and cloud servers)
     const result1 = await trySendMail(
+      { host: 'smtp.gmail.com', port: 587, secure: false, auth: authConfig, ...timeouts, tls: { rejectUnauthorized: false } },
+      mailOptions,
+      'port-587-starttls'
+    );
+    if (result1) return { success: true, provider: 'nodemailer', messageId: result1.messageId };
+
+    // Strategy 2: service:'gmail'
+    const result2 = await trySendMail(
       { service: 'gmail', auth: authConfig, ...timeouts, tls: { rejectUnauthorized: false } },
       mailOptions,
       'gmail-service'
     );
-    if (result1) return { success: true, provider: 'nodemailer', messageId: result1.messageId };
+    if (result2) return { success: true, provider: 'nodemailer', messageId: result2.messageId };
 
-    // Strategy 2: Port 465 / SSL (direct TLS)
-    const result2 = await trySendMail(
+    // Strategy 3: Port 465 / SSL (direct TLS)
+    const result3 = await trySendMail(
       { host: 'smtp.gmail.com', port: 465, secure: true, auth: authConfig, ...timeouts, tls: { rejectUnauthorized: false } },
       mailOptions,
       'port-465-ssl'
-    );
-    if (result2) return { success: true, provider: 'nodemailer', messageId: result2.messageId };
-
-    // Strategy 3: Port 587 / STARTTLS
-    const result3 = await trySendMail(
-      { host: 'smtp.gmail.com', port: 587, secure: false, auth: authConfig, ...timeouts, tls: { rejectUnauthorized: false } },
-      mailOptions,
-      'port-587-starttls'
     );
     if (result3) return { success: true, provider: 'nodemailer', messageId: result3.messageId };
 
