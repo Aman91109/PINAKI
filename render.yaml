@@ -37,7 +37,7 @@ services:
         value: pinaki.sna@gmail.com
       - key: EMAIL_TO
         value: pinaki.sna@gmail.com
-      - key: ANTHROPIC_API_KEY
+      - key: OPENAI_API_KEY
         sync: false
       - key: CRON_SECRET
         sync: false

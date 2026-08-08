@@ -1,7 +1,6 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
-const Anthropic = require('@anthropic-ai/sdk');
 
 async function testAll() {
   console.log('====================================================');
@@ -11,7 +10,7 @@ async function testAll() {
   const results = {
     resend: { status: 'PENDING' },
     mongodb: { status: 'PENDING' },
-    anthropic: { status: 'PENDING' },
+    openai: { status: 'PENDING' },
     gmailSmtp: { status: 'PENDING' }
   };
 
@@ -85,26 +84,39 @@ async function testAll() {
   }
   console.log('');
 
-  // 3. TEST ANTHROPIC API KEY
+  // 3. TEST OPENAI API KEY
   console.log('----------------------------------------------------');
-  console.log('3. TESTING ANTHROPIC CLAUDE API KEY');
+  console.log('3. TESTING OPENAI API KEY');
   console.log('----------------------------------------------------');
-  const anthropicKey = process.env.ANTHROPIC_API_KEY;
-  console.log(`Anthropic API Key: ${anthropicKey ? anthropicKey.substring(0, 15) + '...' : 'NOT CONFIGURED'}`);
+  const openaiKey = process.env.OPENAI_API_KEY;
+  console.log(`OpenAI API Key: ${openaiKey ? openaiKey.substring(0, 15) + '...' : 'NOT CONFIGURED'}`);
 
   try {
-    const anthropic = new Anthropic({ apiKey: anthropicKey });
-    const response = await anthropic.messages.create({
-      model: 'claude-3-haiku-20240307',
-      max_tokens: 20,
-      messages: [{ role: 'user', content: 'Say "Anthropic API Key is active!"' }]
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${openaiKey}`
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [{ role: 'user', content: 'Say "OpenAI API Key is active!"' }],
+        max_tokens: 20
+      })
     });
-    console.log('✅ Anthropic Claude API Working!');
-    console.log(`   Response: "${response.content[0]?.text?.trim()}"`);
-    results.anthropic = { status: 'SUCCESS', response: response.content[0]?.text?.trim() };
+    const data = await response.json();
+    if (response.ok && data.choices?.[0]?.message?.content) {
+      const reply = data.choices[0].message.content.trim();
+      console.log('✅ OpenAI API Working!');
+      console.log(`   Response: "${reply}"`);
+      results.openai = { status: 'SUCCESS', response: reply };
+    } else {
+      console.error('❌ OpenAI API Failed:', data.error?.message || JSON.stringify(data));
+      results.openai = { status: 'FAILED', error: data.error?.message || JSON.stringify(data) };
+    }
   } catch (err) {
-    console.error(`❌ Anthropic API Failed: ${err.message}`);
-    results.anthropic = { status: 'FAILED', error: err.message };
+    console.error(`❌ OpenAI API Error: ${err.message}`);
+    results.openai = { status: 'FAILED', error: err.message };
   }
   console.log('');
 
@@ -139,10 +151,9 @@ async function testAll() {
   // SUMMARY
   console.log('====================================================');
   console.log('                 FINAL CREDENTIAL SUMMARY            ');
-  console.log('====================================================');
   console.log(`1. Resend API Key:      [${results.resend.status}]`);
   console.log(`2. MongoDB Atlas:       [${results.mongodb.status}]`);
-  console.log(`3. Anthropic Claude AI: [${results.anthropic.status}]`);
+  console.log(`3. OpenAI GPT-4o:       [${results.openai.status}]`);
   console.log(`4. Gmail SMTP Backup:   [${results.gmailSmtp.status}]`);
   console.log('====================================================\n');
 }

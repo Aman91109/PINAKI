@@ -1,4 +1,3 @@
-const Anthropic = require('@anthropic-ai/sdk');
 const Blog = require('../models/Blog');
 const mockDb = require('../utils/mockDb');
 const { pickTopic } = require('./blogTopics');
@@ -22,7 +21,7 @@ const { pickTopic } = require('./blogTopics');
  * removed later.
  */
 
-const MODEL = 'claude-opus-5';
+const MODEL = 'gpt-4o';
 const AUTHOR = 'Pinaki';
 
 // Structured-output schema. Note: JSON Schema length/count constraints
@@ -168,64 +167,58 @@ function isSameUtcDay(a, b) {
 
 // ── Model call ──────────────────────────────────────────────────────────────
 
-let client;
-function getClient() {
-  if (!client) client = new Anthropic();
-  return client;
-}
-
 async function requestPost(topic) {
-  const params = {
-    model: MODEL,
-    max_tokens: 16000,
-    // Adaptive is the default on Opus 5; stated explicitly so the intent is
-    // obvious to anyone reading this later.
-    thinking: { type: 'adaptive' },
-    output_config: {
-      effort: process.env.BLOG_AUTOGEN_EFFORT || 'medium',
-      format: { type: 'json_schema', schema: POST_SCHEMA },
-    },
-    system: SYSTEM_PROMPT,
-    messages: [{ role: 'user', content: buildUserPrompt(topic) }],
-  };
-
-  // Server-side fallback: if the safety classifiers decline, the API re-runs
-  // the request on a fallback model in the same call instead of returning a
-  // refusal. Harmless for this workload, but an unattended job should not stop
-  // producing because of one edge-case decline.
-  try {
-    return await getClient().beta.messages.create({
-      ...params,
-      betas: ['server-side-fallback-2026-07-01'],
-      fallbacks: 'default',
-    });
-  } catch (err) {
-    const message = String(err?.message || '');
-    const isFallbackRejection =
-      err?.status === 400 && /fallback|beta/i.test(message);
-    if (!isFallbackRejection) throw err;
-    console.warn(
-      '[blog-autogen] server-side fallback unavailable, retrying without it:',
-      message
-    );
-    return getClient().messages.create(params);
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    throw new Error('OPENAI_API_KEY is not configured');
   }
+
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: MODEL,
+      messages: [
+        { role: 'system', content: SYSTEM_PROMPT },
+        { role: 'user', content: buildUserPrompt(topic) }
+      ],
+      response_format: {
+        type: 'json_schema',
+        json_schema: {
+          name: 'blog_post',
+          strict: true,
+          schema: POST_SCHEMA,
+        }
+      }
+    })
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    const message = errorData.error?.message || response.statusText || 'Unknown OpenAI API Error';
+    throw new Error(`OpenAI API failed with status ${response.status}: ${message}`);
+  }
+
+  return response.json();
 }
 
 function extractJson(response) {
-  if (response.stop_reason === 'refusal') {
-    throw new Error(
-      `model refused the request (${response.stop_details?.category || 'no category'})`
-    );
+  const choice = response.choices?.[0];
+  if (!choice) throw new Error('OpenAI response returned no choices');
+  if (choice.finish_reason === 'length') {
+    throw new Error('response hit token limit — JSON is truncated');
   }
-  if (response.stop_reason === 'max_tokens') {
-    throw new Error('response hit max_tokens — JSON would be truncated');
+  if (choice.finish_reason === 'content_filter') {
+    throw new Error('OpenAI response was blocked by content filters');
   }
 
-  const textBlock = response.content.find((block) => block.type === 'text');
-  if (!textBlock) throw new Error('response contained no text block');
+  const contentText = choice.message?.content;
+  if (!contentText) throw new Error('OpenAI response contained no content text');
 
-  return JSON.parse(textBlock.text);
+  return JSON.parse(contentText);
 }
 
 // ── Entry point ─────────────────────────────────────────────────────────────
@@ -242,8 +235,8 @@ async function generateDailyPost({ force = false } = {}) {
   if (process.env.BLOG_AUTOGEN_ENABLED === 'false') {
     return { status: 'disabled', reason: 'BLOG_AUTOGEN_ENABLED is false' };
   }
-  if (!process.env.ANTHROPIC_API_KEY) {
-    return { status: 'skipped', reason: 'ANTHROPIC_API_KEY is not set' };
+  if (!process.env.OPENAI_API_KEY) {
+    return { status: 'skipped', reason: 'OPENAI_API_KEY is not set' };
   }
 
   const recent = await recentPosts();
@@ -261,14 +254,6 @@ async function generateDailyPost({ force = false } = {}) {
   try {
     post = extractJson(await requestPost(topic));
   } catch (err) {
-    if (err instanceof Anthropic.RateLimitError) {
-      console.error('[blog-autogen] rate limited; skipping today.');
-      return { status: 'failed', reason: 'rate limited' };
-    }
-    if (err instanceof Anthropic.APIConnectionError) {
-      console.error('[blog-autogen] could not reach the API; skipping today.');
-      return { status: 'failed', reason: 'connection error' };
-    }
     console.error('[blog-autogen] generation failed:', err.message);
     return { status: 'failed', reason: err.message };
   }
