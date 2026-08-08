@@ -57,7 +57,7 @@ const POST_SCHEMA = {
   additionalProperties: false,
 };
 
-const SYSTEM_PROMPT = `You write engineering posts for Pinaki, a three-person freelance studio that builds web applications, AI systems and automation with Next.js, Node, Python, PostgreSQL and AWS.
+const SYSTEM_PROMPT = `You write highly detailed, authoritative engineering posts for Pinaki, a three-person freelance studio that builds web applications, AI systems and automation with Next.js, Node, Python, PostgreSQL and AWS.
 
 Voice and standards:
 - Write for a working engineer who has hit this problem, not for a search engine.
@@ -65,6 +65,7 @@ Voice and standards:
 - Include real, runnable code. Short, focused examples that illustrate one idea.
 - Prefer specifics over adjectives. "Cut p95 from 800ms to 120ms" beats "dramatically faster".
 - Cover the tradeoff honestly, including when the advice does not apply.
+- Ensure the post is exhaustive, providing complete step-by-step explanations, detailed configuration code, and thorough architectural insights. Avoid shortcuts, summaries, or placeholders.
 
 Hard rules:
 - Never invent client names, project names, metrics, benchmarks or quotes. If you
@@ -82,11 +83,14 @@ Title direction: ${topic.title}
 Angle: ${topic.angle}
 
 Requirements:
-- 900 to 1400 words of body content.
+- 1500 to 2500 words of comprehensive, deeply detailed body content.
 - Open with the problem, not with background. The first paragraph should make a
-  reader who has this problem recognise it.
-- Use "## " subheadings to break up the argument. Three to five of them.
-- Include at least one fenced code block with a language tag, showing real code.
+  reader who has this problem recognise it immediately.
+- Use "## " subheadings to break up the argument. Use four to six subheadings to cover all technical aspects in detail.
+- To achieve the required word count, write 3-4 highly detailed, descriptive paragraphs under each subheading. Expand on implementation steps, security, performance, and configurations.
+- Provide a deep-dive technical explanation of the concepts, architecture, and step-by-step implementation.
+- Include at least two distinct, detailed fenced code blocks with language tags, showing real, runnable code examples with comments.
+- Do not gloss over complex details or skip parts of the code. Write complete helper functions and configurations.
 - Close with the tradeoff or the case where this approach is wrong — not a summary.
 - The title you return may refine the direction above, but must stay on the topic.`;
 }
@@ -113,13 +117,19 @@ function validatePost(post) {
   if (typeof excerpt !== 'string' || excerpt.trim().length < 60 || excerpt.length > 300) {
     problems.push(`excerpt length out of range (${excerpt?.length})`);
   }
-  if (typeof content !== 'string' || content.trim().length < 900) {
-    problems.push(`content too short (${content?.length})`);
+  const wordCount = typeof content === 'string' ? content.split(/\s+/).filter(Boolean).length : 0;
+  if (typeof content !== 'string' || wordCount < 600) {
+    problems.push(`content too short (${wordCount} words, minimum is 600)`);
   }
   if (typeof content === 'string') {
     if (!/^#\s+\S/m.test(content)) problems.push('content has no H1 heading');
     if (!/^##\s+\S/m.test(content)) problems.push('content has no H2 subheading');
-    if (!content.includes('```')) problems.push('content has no code block');
+    
+    const codeBlockCount = (content.match(/```/g) || []).length / 2;
+    if (codeBlockCount < 2) {
+      problems.push(`content has too few code blocks (${codeBlockCount}, minimum is 2)`);
+    }
+    
     // Catches a model that emitted its own scaffolding instead of prose.
     if (/\b(lorem ipsum|TODO|TBD|\[insert|placeholder)\b/i.test(content)) {
       problems.push('content contains placeholder text');
