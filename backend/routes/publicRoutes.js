@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
 const { upload, uploadToCloudinary } = require('../middleware/uploadMiddleware');
 const mockDb = require('../utils/mockDb');
@@ -55,10 +56,43 @@ const trySendMail = async (transportConfig, mailOptions, label) => {
   return null; // both attempts failed
 };
 
-// Helper: Send email notification — tries 3 SMTP strategies + Web3Forms fallback
+// Helper: Send email notification — tries Resend API (Primary) -> SMTP (Secondary) -> Web3Forms (Fallback)
 const sendEmailAlert = async (lead) => {
   const recipientEmail = process.env.EMAIL_TO || 'pinaki.sna@gmail.com';
 
+  // Strategy 1: Resend API (Primary — Fast, reliable HTTP API with 99.9% inbox delivery)
+  const resendApiKey = process.env.RESEND_API_KEY;
+  if (resendApiKey) {
+    try {
+      const fromAddress = process.env.RESEND_FROM || 'Portfolio Inquiry <onboarding@resend.dev>';
+      const res = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${resendApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: fromAddress,
+          to: [recipientEmail],
+          reply_to: lead.email,
+          subject: `🚀 New Project Inquiry from ${lead.name} (${lead.projectType || 'General'})`,
+          html: buildEmailHtml(lead),
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok && data.id) {
+        console.log(`[EMAIL SENT via Resend API] MessageId: ${data.id} -> ${recipientEmail}`);
+        return { success: true, provider: 'resend', messageId: data.id };
+      } else {
+        console.warn('[RESEND API WARNING]', data.message || JSON.stringify(data));
+      }
+    } catch (err) {
+      console.warn('[RESEND API ERROR]', err.message);
+    }
+  }
+
+  // Strategy 2: Nodemailer / Gmail SMTP (Secondary)
   if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
     const authConfig = {
       user: process.env.EMAIL_USER,
@@ -79,34 +113,34 @@ const sendEmailAlert = async (lead) => {
       socketTimeout: 15000,
     };
 
-    // Strategy 1: Port 587 / STARTTLS (fast & works on local networks and cloud servers)
+    // Attempt Port 587 / STARTTLS
     const result1 = await trySendMail(
       { host: 'smtp.gmail.com', port: 587, secure: false, auth: authConfig, ...timeouts, tls: { rejectUnauthorized: false } },
       mailOptions,
       'port-587-starttls'
     );
-    if (result1) return { success: true, provider: 'nodemailer', messageId: result1.messageId };
+    if (result1) return { success: true, provider: 'nodemailer-587', messageId: result1.messageId };
 
-    // Strategy 2: service:'gmail'
+    // Attempt service: 'gmail'
     const result2 = await trySendMail(
       { service: 'gmail', auth: authConfig, ...timeouts, tls: { rejectUnauthorized: false } },
       mailOptions,
       'gmail-service'
     );
-    if (result2) return { success: true, provider: 'nodemailer', messageId: result2.messageId };
+    if (result2) return { success: true, provider: 'nodemailer-gmail', messageId: result2.messageId };
 
-    // Strategy 3: Port 465 / SSL (direct TLS)
+    // Attempt Port 465 / SSL
     const result3 = await trySendMail(
       { host: 'smtp.gmail.com', port: 465, secure: true, auth: authConfig, ...timeouts, tls: { rejectUnauthorized: false } },
       mailOptions,
       'port-465-ssl'
     );
-    if (result3) return { success: true, provider: 'nodemailer', messageId: result3.messageId };
+    if (result3) return { success: true, provider: 'nodemailer-465', messageId: result3.messageId };
 
     console.error('[EMAIL] All 3 SMTP strategies failed after retries.');
   }
 
-  // Fallback: Web3Forms API (if WEB3FORMS_KEY is set in .env)
+  // Strategy 3: Web3Forms API (Fallback if configured)
   const web3Key = process.env.WEB3FORMS_KEY || process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
   if (web3Key) {
     try {
@@ -288,8 +322,9 @@ router.post('/lead', upload.single('fileAttachment'), async (req, res) => {
       fileUrl = cloudinaryUrl || `/uploads/${req.file.filename}`;
     }
 
-    if (global.useMockDB) {
-      const lead = mockDb.create('Lead', {
+    let lead;
+    if (global.useMockDB || mongoose.connection.readyState !== 1) {
+      lead = mockDb.create('Lead', {
         name,
         email,
         phone: phone || '',
@@ -300,28 +335,18 @@ router.post('/lead', upload.single('fileAttachment'), async (req, res) => {
         fileAttachment: fileUrl,
         status: 'New',
       });
-
-      // Respond immediately, then send the email (handler stays alive until email completes)
-      res.status(201).json({
-        success: true,
-        message: 'Inquiry submitted successfully! Our team will contact you shortly.',
-        data: lead,
+    } else {
+      lead = await Lead.create({
+        name,
+        email,
+        phone: phone || '',
+        company: company || '',
+        budget: budget || 'Not sure yet',
+        projectType: projectType || 'Web application',
+        message,
+        fileAttachment: fileUrl,
       });
-      await sendEmailAlert(lead).catch(err => console.error('[EMAIL BG ERROR]', err.message));
-      return;
     }
-
-    // Mongoose execution
-    const lead = await Lead.create({
-      name,
-      email,
-      phone: phone || '',
-      company: company || '',
-      budget: budget || 'Not sure yet',
-      projectType: projectType || 'Web application',
-      message,
-      fileAttachment: fileUrl,
-    });
 
     // Respond immediately, then send the email (handler stays alive until email completes)
     res.status(201).json({
@@ -344,37 +369,19 @@ router.post('/newsletter', async (req, res) => {
       return res.status(400).json({ success: false, error: 'Please provide an email address' });
     }
 
-    if (global.useMockDB) {
+    if (global.useMockDB || mongoose.connection.readyState !== 1) {
       const existing = mockDb.findOne('Subscriber', { email });
       if (existing) {
         return res.status(400).json({ success: false, error: 'Email already subscribed!' });
       }
-
       mockDb.create('Subscriber', { email });
-
-      // Respond immediately, then send the email (handler stays alive until email completes)
-      res.status(201).json({
-        success: true,
-        message: 'Subscribed to newsletter successfully!',
-      });
-      await sendEmailAlert({
-        name: 'Newsletter Subscriber',
-        email: email,
-        phone: '',
-        company: '',
-        projectType: 'Newsletter Signup',
-        message: `New newsletter subscription from: ${email}`,
-      }).catch(err => console.error('[EMAIL BG ERROR]', err.message));
-      return;
+    } else {
+      const existing = await Subscriber.findOne({ email });
+      if (existing) {
+        return res.status(400).json({ success: false, error: 'Email already subscribed!' });
+      }
+      await Subscriber.create({ email });
     }
-
-    // Mongoose execution
-    const existing = await Subscriber.findOne({ email });
-    if (existing) {
-      return res.status(400).json({ success: false, error: 'Email already subscribed!' });
-    }
-
-    await Subscriber.create({ email });
 
     // Respond immediately, then send the email (handler stays alive until email completes)
     res.status(201).json({

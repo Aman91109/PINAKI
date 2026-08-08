@@ -17,6 +17,10 @@ services:
         value: super_secret_futuristic_key_1337
       - key: JWT_EXPIRE
         value: 30d
+      - key: RESEND_API_KEY
+        sync: false
+      - key: RESEND_FROM
+        value: Portfolio Inquiry <onboarding@resend.dev>
       - key: EMAIL_HOST
         value: smtp.gmail.com
       - key: EMAIL_PORT
@@ -37,3 +41,4 @@ services:
         sync: false
       - key: CRON_SECRET
         sync: false
+
