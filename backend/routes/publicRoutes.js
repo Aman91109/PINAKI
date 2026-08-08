@@ -18,24 +18,74 @@ const FAQ = require('../models/FAQ');
 
 // Helper: Build the HTML email body from a lead object
 const buildEmailHtml = (lead) => `
-  <div style="font-family: 'Segoe UI', Arial, sans-serif; padding: 24px; color: #1f2937; max-width: 600px; border: 1px solid #e5e7eb; border-radius: 12px; background-color: #ffffff;">
-    <h2 style="color: #4f46e5; margin-top: 0; border-bottom: 2px solid #6366f1; padding-bottom: 8px;">
-      📥 New Project Inquiry (Step 9)
-    </h2>
-    <table style="width: 100%; border-collapse: collapse; margin-top: 16px;">
-      <tr><td style="padding: 6px 0; font-weight: bold; width: 130px;">Name:</td><td>${lead.name}</td></tr>
-      <tr><td style="padding: 6px 0; font-weight: bold;">Email:</td><td><a href="mailto:${lead.email}" style="color: #4f46e5; font-weight: bold;">${lead.email}</a></td></tr>
-      <tr><td style="padding: 6px 0; font-weight: bold;">Phone:</td><td>${lead.phone || 'N/A'}</td></tr>
-      <tr><td style="padding: 6px 0; font-weight: bold;">Company:</td><td>${lead.company || 'N/A'}</td></tr>
-      <tr><td style="padding: 6px 0; font-weight: bold;">Project Type:</td><td><span style="background-color: #e0e7ff; color: #3730a3; padding: 2px 8px; border-radius: 4px; font-weight: 600;">${lead.projectType || 'N/A'}</span></td></tr>
-      <tr><td style="padding: 6px 0; font-weight: bold;">Budget Range:</td><td>${lead.budget || 'N/A'}</td></tr>
-    </table>
-    <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 20px 0;" />
-    <h3 style="color: #111827; margin-bottom: 8px;">Message / Project Brief:</h3>
-    <div style="background-color: #f9fafb; padding: 16px; border-radius: 8px; border-left: 4px solid #6366f1; white-space: pre-wrap; font-size: 14px; line-height: 1.6;">${lead.message}</div>
-    ${lead.fileAttachment ? `<p style="margin-top: 16px;"><strong>Attachment:</strong> <a href="${lead.fileAttachment}">${lead.fileAttachment}</a></p>` : ''}
-    <div style="margin-top: 24px; font-size: 12px; color: #6b7280; border-top: 1px solid #f3f4f6; padding-top: 12px;">
-      Sent automatically from your Portfolio Contact Form (Step 9). Click "Reply" in your email app to reply directly to ${lead.email}.
+  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; padding: 32px 24px; color: #0f172a; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 16px; background-color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.04);">
+    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #f1f5f9; padding-bottom: 16px; margin-bottom: 20px;">
+      <h2 style="color: #4f46e5; margin: 0; font-size: 20px; font-weight: 700; letter-spacing: -0.02em;">
+        📥 New Client Inquiry — Pinaki Portfolio
+      </h2>
+    </div>
+
+    <p style="margin: 0 0 16px 0; font-size: 15px; color: #475569;">
+      A prospective client just submitted an inquiry on your portfolio website:
+    </p>
+
+    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px; margin-bottom: 20px;">
+      <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+        <tr>
+          <td style="padding: 6px 0; color: #64748b; font-weight: 600; width: 120px;">Client Name:</td>
+          <td style="padding: 6px 0; color: #0f172a; font-weight: 700;">${lead.name}</td>
+        </tr>
+        <tr>
+          <td style="padding: 6px 0; color: #64748b; font-weight: 600;">Email:</td>
+          <td style="padding: 6px 0;"><a href="mailto:${lead.email}" style="color: #4f46e5; font-weight: 600; text-decoration: none;">${lead.email}</a></td>
+        </tr>
+        ${lead.company ? `
+        <tr>
+          <td style="padding: 6px 0; color: #64748b; font-weight: 600;">Company:</td>
+          <td style="padding: 6px 0; color: #0f172a; font-weight: 600;">${lead.company}</td>
+        </tr>` : ''}
+        <tr>
+          <td style="padding: 6px 0; color: #64748b; font-weight: 600;">Project Type:</td>
+          <td style="padding: 6px 0;">
+            <span style="display: inline-block; background-color: #e0e7ff; color: #3730a3; padding: 3px 10px; border-radius: 9999px; font-size: 12px; font-weight: 700;">
+              ${lead.projectType || 'Web application'}
+            </span>
+          </td>
+        </tr>
+        ${lead.budget && lead.budget !== 'Not sure yet' ? `
+        <tr>
+          <td style="padding: 6px 0; color: #64748b; font-weight: 600;">Budget:</td>
+          <td style="padding: 6px 0; color: #0f172a; font-weight: 600;">${lead.budget}</td>
+        </tr>` : ''}
+        ${lead.phone ? `
+        <tr>
+          <td style="padding: 6px 0; color: #64748b; font-weight: 600;">Phone:</td>
+          <td style="padding: 6px 0; color: #0f172a;">${lead.phone}</td>
+        </tr>` : ''}
+      </table>
+    </div>
+
+    <div style="margin-bottom: 24px;">
+      <h3 style="color: #1e293b; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 8px 0;">
+        Project Brief / Message:
+      </h3>
+      <div style="background-color: #ffffff; border-left: 4px solid #4f46e5; border-radius: 4px; padding: 14px 16px; font-size: 14px; line-height: 1.6; color: #1e293b; white-space: pre-wrap; background: #fafafa; border: 1px solid #f1f5f9; border-left: 4px solid #4f46e5;">${lead.message}</div>
+    </div>
+
+    ${lead.fileAttachment ? `
+    <div style="margin-bottom: 20px; font-size: 13px;">
+      <strong>Attachment:</strong> <a href="${lead.fileAttachment}" target="_blank" style="color: #4f46e5; text-decoration: underline;">View Uploaded File</a>
+    </div>` : ''}
+
+    <div style="text-align: center; margin: 28px 0 16px 0;">
+      <a href="mailto:${lead.email}?subject=Re:%20${encodeURIComponent(lead.projectType || 'Project Inquiry')}%20—%20Pinaki" 
+         style="display: inline-block; background-color: #4f46e5; color: #ffffff; font-weight: 600; font-size: 14px; padding: 12px 24px; border-radius: 8px; text-decoration: none; box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);">
+        ✉️ Reply to ${lead.name} (${lead.email})
+      </a>
+    </div>
+
+    <div style="margin-top: 28px; font-size: 12px; color: #94a3b8; border-top: 1px solid #f1f5f9; padding-top: 14px; text-align: center;">
+      Delivered instantly via Resend API to <strong>pinaki.sna@gmail.com</strong>. You can simply click "Reply" in your email client to message the client back directly.
     </div>
   </div>
 `;
