@@ -19,8 +19,8 @@ function startScheduler() {
     console.log('[blog-autogen] disabled (BLOG_AUTOGEN_ENABLED=false).');
     return null;
   }
-  if (!process.env.OPENAI_API_KEY) {
-    console.log('[blog-autogen] no OPENAI_API_KEY set — scheduler not started.');
+  if (!process.env.GROQ_API_KEY) {
+    console.log('[blog-autogen] no GROQ_API_KEY set — scheduler not started.');
     return null;
   }
   if (!cron.validate(SCHEDULE)) {

@@ -37,7 +37,7 @@ services:
         value: pinaki.sna@gmail.com
       - key: EMAIL_TO
         value: pinaki.sna@gmail.com
-      - key: OPENAI_API_KEY
+      - key: GROQ_API_KEY
         sync: false
       - key: CRON_SECRET
         sync: false

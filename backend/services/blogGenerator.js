@@ -21,7 +21,7 @@ const { pickTopic } = require('./blogTopics');
  * removed later.
  */
 
-const MODEL = 'gpt-4o';
+const MODEL = 'llama-3.3-70b-versatile';
 const AUTHOR = 'Pinaki';
 
 // Structured-output schema. Note: JSON Schema length/count constraints
@@ -168,12 +168,12 @@ function isSameUtcDay(a, b) {
 // ── Model call ──────────────────────────────────────────────────────────────
 
 async function requestPost(topic) {
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
-    throw new Error('OPENAI_API_KEY is not configured');
+    throw new Error('GROQ_API_KEY is not configured');
   }
 
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -182,24 +182,24 @@ async function requestPost(topic) {
     body: JSON.stringify({
       model: MODEL,
       messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
+        { 
+          role: 'system', 
+          content: SYSTEM_PROMPT + '\nYou MUST respond with a JSON object that matches this JSON Schema:\n' + JSON.stringify(POST_SCHEMA, null, 2) 
+        },
         { role: 'user', content: buildUserPrompt(topic) }
       ],
       response_format: {
-        type: 'json_schema',
-        json_schema: {
-          name: 'blog_post',
-          strict: true,
-          schema: POST_SCHEMA,
-        }
-      }
+        type: 'json_object'
+      },
+      temperature: 0.7,
+      max_tokens: 4096
     })
   });
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    const message = errorData.error?.message || response.statusText || 'Unknown OpenAI API Error';
-    throw new Error(`OpenAI API failed with status ${response.status}: ${message}`);
+    const message = errorData.error?.message || response.statusText || 'Unknown Groq API Error';
+    throw new Error(`Groq API failed with status ${response.status}: ${message}`);
   }
 
   return response.json();
@@ -207,16 +207,16 @@ async function requestPost(topic) {
 
 function extractJson(response) {
   const choice = response.choices?.[0];
-  if (!choice) throw new Error('OpenAI response returned no choices');
+  if (!choice) throw new Error('Groq response returned no choices');
   if (choice.finish_reason === 'length') {
     throw new Error('response hit token limit — JSON is truncated');
   }
   if (choice.finish_reason === 'content_filter') {
-    throw new Error('OpenAI response was blocked by content filters');
+    throw new Error('Groq response was blocked by content filters');
   }
 
   const contentText = choice.message?.content;
-  if (!contentText) throw new Error('OpenAI response contained no content text');
+  if (!contentText) throw new Error('Groq response contained no content text');
 
   return JSON.parse(contentText);
 }
@@ -235,8 +235,8 @@ async function generateDailyPost({ force = false } = {}) {
   if (process.env.BLOG_AUTOGEN_ENABLED === 'false') {
     return { status: 'disabled', reason: 'BLOG_AUTOGEN_ENABLED is false' };
   }
-  if (!process.env.OPENAI_API_KEY) {
-    return { status: 'skipped', reason: 'OPENAI_API_KEY is not set' };
+  if (!process.env.GROQ_API_KEY) {
+    return { status: 'skipped', reason: 'GROQ_API_KEY is not set' };
   }
 
   const recent = await recentPosts();

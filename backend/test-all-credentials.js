@@ -10,7 +10,7 @@ async function testAll() {
   const results = {
     resend: { status: 'PENDING' },
     mongodb: { status: 'PENDING' },
-    openai: { status: 'PENDING' },
+    groq: { status: 'PENDING' },
     gmailSmtp: { status: 'PENDING' }
   };
 
@@ -84,39 +84,39 @@ async function testAll() {
   }
   console.log('');
 
-  // 3. TEST OPENAI API KEY
+  // 3. TEST GROQ API KEY
   console.log('----------------------------------------------------');
-  console.log('3. TESTING OPENAI API KEY');
+  console.log('3. TESTING GROQ API KEY');
   console.log('----------------------------------------------------');
-  const openaiKey = process.env.OPENAI_API_KEY;
-  console.log(`OpenAI API Key: ${openaiKey ? openaiKey.substring(0, 15) + '...' : 'NOT CONFIGURED'}`);
+  const groqKey = process.env.GROQ_API_KEY;
+  console.log(`Groq API Key: ${groqKey ? groqKey.substring(0, 15) + '...' : 'NOT CONFIGURED'}`);
 
   try {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${openaiKey}`
+        'Authorization': `Bearer ${groqKey}`
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [{ role: 'user', content: 'Say "OpenAI API Key is active!"' }],
+        model: 'llama-3.3-70b-versatile',
+        messages: [{ role: 'user', content: 'Say "Groq API Key is active!"' }],
         max_tokens: 20
       })
     });
     const data = await response.json();
     if (response.ok && data.choices?.[0]?.message?.content) {
       const reply = data.choices[0].message.content.trim();
-      console.log('✅ OpenAI API Working!');
+      console.log('✅ Groq API Working!');
       console.log(`   Response: "${reply}"`);
-      results.openai = { status: 'SUCCESS', response: reply };
+      results.groq = { status: 'SUCCESS', response: reply };
     } else {
-      console.error('❌ OpenAI API Failed:', data.error?.message || JSON.stringify(data));
-      results.openai = { status: 'FAILED', error: data.error?.message || JSON.stringify(data) };
+      console.error('❌ Groq API Failed:', data.error?.message || JSON.stringify(data));
+      results.groq = { status: 'FAILED', error: data.error?.message || JSON.stringify(data) };
     }
   } catch (err) {
-    console.error(`❌ OpenAI API Error: ${err.message}`);
-    results.openai = { status: 'FAILED', error: err.message };
+    console.error(`❌ Groq API Error: ${err.message}`);
+    results.groq = { status: 'FAILED', error: err.message };
   }
   console.log('');
 
@@ -153,7 +153,7 @@ async function testAll() {
   console.log('                 FINAL CREDENTIAL SUMMARY            ');
   console.log(`1. Resend API Key:      [${results.resend.status}]`);
   console.log(`2. MongoDB Atlas:       [${results.mongodb.status}]`);
-  console.log(`3. OpenAI GPT-4o:       [${results.openai.status}]`);
+  console.log(`3. Groq Llama 3.3:      [${results.groq.status}]`);
   console.log(`4. Gmail SMTP Backup:   [${results.gmailSmtp.status}]`);
   console.log('====================================================\n');
 }
